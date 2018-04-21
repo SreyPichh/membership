@@ -1,0 +1,517 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>vK Membership</title>
+{% endblock %}
+
+{% block ajax_style %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datetimepicker.min.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    {% include 'include/navbar.html' %}
+
+    {% include 'include/slider.html' %}
+
+    {# body content start #} 
+    <div class="page-wrapper">
+        <div class="main">
+            <div class="main-inner">
+                <div class="container">
+                    {# small header #}
+                    <div class="row">
+                    <!-- Search Option -->
+                        <div class="col-xs-12 col-md-12"> 
+                            <form action="{% url 'member:search' %}" class="form-search form-horizontal pull-right" id="custom-search-form">
+                                <div class="input-append span12">
+                                    <!-- <label for="search" class="sr-only">Search</label> -->
+                                    <input type="text" class="search-query" name="search" id="accommodation_autocomplete" placeholder="Search...." value="{{ request.GET.search }}"><span class="glyphicon glyphicon-search"></span>
+                                </div>
+                            </form>
+                        </div>
+                         <!-- end search form --> 
+                        <div class="col-xs-12 col-md-12">
+                        <div class="heading-title text-center page-title    " id="accommodation-popular">
+                                <h2 class="text-uppercase" >Popular Accommodation</h2>
+                            </div>
+                        </div>
+                        <div>
+                        <form id="booking-list" action="{% url 'member:booking' %}" method="post">
+                            {% csrf_token %}
+                            <div class="minus-margin-top-md margin-bottom-md">
+                            <!-- Check-in and Check-out -->
+                                <div class="form-group row no-margin">
+                                    <label for="check-in-time" class="col-sm-3 col-form-label label-xl">
+                                        Check In:
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class='input-group date' id='datetimepicker-check-in'>
+                                            <input id="check-in-time" type="text" class="form-control" value=""/>
+                                            <input id="checkin-time" type="hidden" name="checkin-date">
+                                            {% comment %}First field{% endcomment %}
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row no-margin">
+                                    <label for="check-out-time" class="col-sm-3 col-form-label label-xl">
+                                        Check Out:
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class='input-group date' id='datetimepicker-check-out'>
+                                            <input type="text" id="check-out-time" class="form-control" value=""/>
+                                            <input id="checkout-time" type="hidden" name="checkout-date">
+                                            {% comment %}Second field{% endcomment %}
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Check-in and check-out -->
+                            </div>
+
+                            <div class="card-row">
+
+
+                                {% for accommo in accommodation %}
+                                    <div class="card-row card-border">
+                                        <div class="card-row-inner">
+                                        {% if accommo.image %}
+                                            <div class="card-row-image"
+                                                 data-background-image="{{ accommo.image.url }}"
+                                                 style="background-image: url({{ accommo.image.url }});">
+                                                <div class="card-row-label"><a href="">{{ accommo.name }}</a></div>
+                                                <!-- /.card-row-label -->
+
+                                                <div class="card-row-price">${{ accommo.price }} / night</div><!-- -->
+
+                                            </div><!-- /.card-row-image -->
+                                        {% else %}
+                                            <div class="card-row-image"
+                                                 data-background-image="{% static 'img/defult.png' %}">
+                                                <div class="card-row-label"><a href="">{{ accommo.name }}</a></div>
+                                                <!-- /.card-row-label -->
+
+                                                <div class="card-row-price">${{ accommo.price }} / night</div><!-- -->
+
+                                            </div><!-- /.card-row-image -->
+                                            {% endif %}
+                                            <div class="card-row-body">
+                                                <h2 class="card-row-title"><a href="">{{ accommo.name }}</a></h2>
+                                                <div class="card-row-content">
+                                                    <p>{{ accommo.get_short_detail }}........</p></div>
+                                                <!-- /.card-row-content -->
+                                            </div><!-- /.card-row-body -->
+
+                                            <div class="card-row-properties">
+                                                <dl>
+
+                                                    <dd>Price</dd>
+                                                    <dt>${{ accommo.price }} / night</dt>
+
+                                                    <dd>Category</dd>
+                                                    <dt>{{ accommo.type }}</dt>
+
+                                                    <dd>Availability</dd>
+                                                    <dt class="availability" data-id = "{{ accommo.aid|safe }}" data-name="{{ accommo.name }}"
+                                                        style="color: #F27A4E">2 room(s)
+                                                    </dt>
+
+                                                    <dd>Quantity</dd>
+                                                    <dt>
+                                                        <label for="{{ accommo.name }}"></label>
+                                                        <select name="{{ accommo.name }}" data-amount = "{{ accommo.amount }}" id="{{ accommo.aid|safe }}">
+
+                                                            {% comment %}{% for room in accommo.get_room_amount %}
+                                                                <option value="{{ room }}">{{ room }} room(s)</option>
+                                                            {% endfor %}{% endcomment %}
+
+                                                        </select>
+                                                        {% comment %}Third field{% endcomment %}
+                                                    </dt>
+                                                </dl>
+                                            </div><!-- /.card-row-properties -->
+                                        </div><!-- /.card-row-inner -->
+                                    </div>
+                                {% endfor %} 
+                            </div>
+
+                            <input type="hidden" name="list-booking" id="list-accommodation">
+                            <input type="submit" id="booking-btn" class="btn btn-book btn-float" value="Book now"/>
+                        </form>
+                        </div>
+                    </div>
+                    {# end small header #}
+                </div>
+                
+                <!-- paginator -->
+               
+                <!-- {% if per_page.has_other_pages %}
+                
+                <div style="text-align: center;" id="pagination">
+                    <ul class="pagination pagination-center" id="pagination-ul">
+                        {% if per_page.has_previous %}
+                            <li><a href="?page={{ per_page.previous_page_number }}">&laquo;</a></li>
+                        {% else %}
+                            <li class="disabled"><span>&laquo;</span></li>
+                        {% endif %}
+
+                        {% for i in per_page.page_range %}
+                            {% if per_page.number == i %}
+                                <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                            {% else %}
+                                <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if per_page.has_next %}
+                            <li><a href="?page={{ per_page.next_page_number }}">&raquo;</a></li>
+                        {% else %}
+                            <li class="disabled"><span>&raquo;</span></li>
+                        {% endif %} 
+
+                    </ul>
+                </div>
+                {% endif %} -->
+            </div>
+        </div>
+    </div>
+    {# body content end #}
+{% endblock %}
+
+{% block footer %}
+    {% include 'include/footer.html' %}
+{% endblock %}
+
+{% block ajax_script %}
+    <script type="text/javascript" src="{% static 'js/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script type="text/javascript">
+        var infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+            onBeforePageLoad: function () {
+                $('.loading').show();
+        },
+        onAfterPageLoad: function ($items) {
+            $('.loading').hide();
+            }
+        });
+
+        $(function() {
+            $("#accommodation_autocomplete").autocomplete({
+                source: "{% url 'member:accommodation_autocomplete' %}",
+                minLength: 1,
+            });
+        });
+        
+        $(window).ready(function () {
+            csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+
+            //  Date Picker Implementation
+            var today = moment().add(1, 'days').format('L');
+            var a = moment().add(1, 'days').format('MM-DD-YYYY');
+            var tomorrow = moment().add(2, 'days').format('L');
+            console.log(today);
+            console.log(a);
+
+            $('#datetimepicker-check-in').datetimepicker({
+                minDate: today,
+                defaultDate: today,
+                format: 'L',
+                showClear: true,
+                widgetPositioning: {
+                    horizontal: 'auto',
+                    vertical: 'bottom'
+                }
+            });
+
+            $('#datetimepicker-check-out').datetimepicker({
+                minDate: tomorrow,
+                defaultDate: tomorrow,
+                format: 'L',
+                showClear: true,
+                widgetPositioning: {
+                    horizontal: 'auto',
+                    vertical: 'bottom'
+                }
+            });
+
+            $('#datetimepicker-check-in').on("dp.change", function (e) {
+                var next_day = moment(e.date).add(1, 'days');
+                $('#datetimepicker-check-out').data("DateTimePicker").minDate(next_day);
+                $('#datetimepicker-check-out').data("DateTimePicker").defaultDate(next_day);
+                //console.log(e.date);
+                date_checkin = moment(e.date).format('L');
+                date_checkout = moment(e.date).add(1, 'days').format('L');
+                console.log(date_checkin);
+                console.log(date_checkout);
+                //console.log(typeof(date_checkin));
+                a = moment(e.date).format('MM-DD-YYYY');
+                $('#checkin-time').val(date_checkin);
+                $('#checkout-time').val(date_checkout);
+
+                check_availability();
+            });
+
+            $('#datetimepicker-check-out').on("dp.change", function (e) {
+                //$('#datetimepicker-check-in').data("DateTimePicker").maxDate(e.date);
+                $('#checkout-time').val(moment(e.date).format('L'));
+                console.log(moment(e.date).format('L'));
+            });
+
+            //  Availability Implementation without changing Checkin Date with auto run function
+            var check_availability = (function availability() {
+                $("select").each(function () {
+                    $(this).find('option').remove();
+                });
+                $(".availability").each(function (index) {
+                    var name = $(this).attr('data-name');
+                    var iD = $(this).attr('data-id');
+                    var txt = $(this);
+
+                    //console.log( index + ": " + $( this ).attr('data-name') );
+                    //console.log($("input[name=csrfmiddlewaretoken]").val());
+
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/accommodation/' + name + '/' + a + '/',
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        data: {
+                            'datein': today
+                        },
+                        headers: {
+                            'X-CSRFToken': csrfmiddlewaretoken
+                        },
+                        success: function (e) {
+                            // Role Back Success
+                            receive_data = e;
+                            txt.text(receive_data + ' room(s)');
+                            for (i = 0; i<= parseInt(receive_data); i++){
+                                var suffix = '';
+                                if (i>1){
+                                    suffix = ' rooms';
+                                }else {
+                                    suffix = ' room';
+                                }
+                                $('select[id='+ iD +']').append($("<option></option>").attr('value', i).text(i + suffix));
+                            }
+                            if (parseInt(receive_data) === 0) {
+                                console.log(iD);
+                                $('select[id='+ iD +']').attr("disabled", "disabled");
+                            }else {
+                                $('select[id='+ iD +']').attr('disabled', false);
+                                console.log('********' +iD);
+                            }
+                        }
+                    });
+
+                });
+                return availability;
+            }());
+
+            console.log(check_availability);
+
+            // Pagination without refreshing page
+
+            // Booking Btn Implementation
+            var room_amount = 0;
+            var room_test = [];
+            var update_item_index = 0;
+            var update_status = false;
+
+            $('select').on("change", function () {
+                var item = {
+                    "name": $(this).attr('name'),
+                    "value": $(this).val()
+                };
+                room_amount = room_amount + $('select').val();
+                console.log("on change proceed.");
+                if (room_test.length === 0) {
+                    room_test.push(item);
+                    console.log(room_test);
+                } else {
+                    var i = room_test.length;
+                    console.log("***************************");
+                    while (i) {
+                        var bobo = i - 1;
+                        i = bobo;
+                        if (bobo >= 0) {
+                            if (room_test[bobo].name === $(this).attr('name')) {
+                                update_item_index = bobo;
+                                update_status = true;
+                                console.log(update_item_index);
+                                console.log("checked exist item");
+                            }
+                        }
+                    }
+                    //console.log(typeof(update_item_index));
+                    //console.log(update_item_index);
+                    if (update_status) {
+                        if (parseInt($(this).val()) === 0) {
+                            room_test.splice(update_item_index, 1)
+                        } else {
+                            room_test[update_item_index].value = $(this).val();
+                        }
+                        update_status = false;
+                    } else {
+                        room_test.push(item);
+                    }
+                    console.log(room_test);
+                    console.log("****************************");
+                }
+                console.log(typeof(JSON.stringify(room_test)));
+                console.log(JSON.stringify(room_test));
+                $("#list-accommodation").val(JSON.stringify(room_test));
+                //console.log($("#list-accommodation").val());
+                console.log("****************************");
+                //show button
+                if (room_test.length > 0) {
+                    $("#booking-btn").fadeIn(200);
+                } else {
+                    $("#booking-btn").fadeOut(200);
+                }
+            });
+
+            {% comment %}
+            $("#booking-list").on('submit', function () {
+               var test_booking = $(this).serialize();
+               alert(test_booking);
+            });
+            {% endcomment %}
+        });
+
+        /*(function($){
+            $.fn.donetyping = function(callback){
+                var _this = $(this);
+                var x_timer;
+                _this.keyup(function(){
+                    clearTimeout(x_timer);
+                    x_timer = setTimeout(clear_timer,1000);
+                });
+                function clear_timer(){
+                    clearTimeout(x_timer);
+                    callback.call(_this);
+                }
+            }
+        })(jQuery);
+        $('#search').donetyping(function(callback){
+            
+        });*/
+        /*$("#search").keyup(function(){
+            $(".card-row").each(function(){
+                $(this).show();
+            });
+            var searchValue = $("#search").val().toLowerCase();
+            if(searchValue!=null&&searchValue!=""){
+                $(".card-row").each(function(){
+                var name = $(this).attr('name'); 
+                name = name.toLowerCase();
+                var check = title.search(searchValue);
+                if(check==-1){
+                    $(this).hide();
+                }
+              });
+            }
+            else{
+                $(".card-row").each(function(){
+
+                $(this).show();
+
+             });
+            }
+        });*/
+    </script>
+{% endblock %}
+
+{% block slide_script %}
+    <!-- SLIDER REVOLUTION INIT  -->
+    <script type="text/javascript">
+
+        jQuery(document).ready(function () {
+
+            jQuery('.tp-banner').show().revolution(
+                {
+                    dottedOverlay: "none",
+                    delay: 8000,
+                    // startwidth:1170,
+                    startheight: 600,
+                    hideThumbs: 200,
+
+                    thumbWidth: 100,
+                    thumbHeight: 50,
+                    thumbAmount: 5,
+
+                    navigationType: "bullet",
+                    navigationArrows: "solo",
+                    navigationStyle: "preview4",
+
+                    touchenabled: "on",
+                    onHoverStop: "on",
+
+                    swipe_velocity: 0.7,
+                    swipe_min_touches: 1,
+                    swipe_max_touches: 1,
+                    drag_block_vertical: false,
+
+                    parallax: "mouse",
+                    parallaxBgFreeze: "on",
+                    parallaxLevels: [7, 4, 3, 2, 5, 4, 3, 2, 1, 0],
+
+                    keyboardNavigation: "off",
+
+                    navigationHAlign: "center",
+                    navigationVAlign: "bottom",
+                    navigationHOffset: 0,
+                    navigationVOffset: 20,
+
+                    soloArrowLeftHalign: "left",
+                    soloArrowLeftValign: "center",
+                    soloArrowLeftHOffset: 20,
+                    soloArrowLeftVOffset: 0,
+
+                    soloArrowRightHalign: "right",
+                    soloArrowRightValign: "center",
+                    soloArrowRightHOffset: 20,
+                    soloArrowRightVOffset: 0,
+
+                    shadow: 0,
+                    fullWidth: "on",
+                    // autoHeight:"on",
+                    fullScreen: "off",
+
+                    spinner: "spinner4",
+
+                    stopLoop: "off",
+                    stopAfterLoops: -1,
+                    stopAtSlide: -1,
+
+                    shuffle: "off",
+
+                    autoHeight: "off",
+                    forceFullWidth: "off",
+
+                    hideThumbsOnMobile: "off",
+                    hideNavDelayOnMobile: 1500,
+                    hideBulletsOnMobile: "off",
+                    hideArrowsOnMobile: "off",
+                    hideThumbsUnderResolution: 0,
+
+                    hideSliderAtLimit: 0,
+                    hideCaptionAtLimit: 0,
+                    hideAllCaptionAtLilmit: 0,
+                    startWithSlide: 0,
+                    videoJsPath: "slider-revolution/videojs/",
+                    fullScreenOffsetContainer: ""
+                });
+
+        }); //ready
+    </script>
+{% endblock %}

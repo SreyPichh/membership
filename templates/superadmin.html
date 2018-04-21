@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+<!-- {% block accommodation_active %}active{% endblock %} -->
+
+{% block title %}
+	<title>Super Admin</title>
+{% endblock %}
+
+{% block content %}
+	{# body content starts #}
+	<nav class="navbar navbar-inverse visible-xs">
+  		<div class="container-fluid">
+    		<div class="navbar-header">
+      			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>                        
+      			</button>
+      			{# logo start #}
+                    <a href="{% url 'member:index' %}" class="">
+                        <img src="{% static 'img/logo.png' %}" class="retina" alt="">
+                    </a>
+                {# logo end #}
+    		</div>
+    		<div class="collapse navbar-collapse" id="myNavbar">
+      			<ul class="nav navbar-nav">
+        			<li><a href="#">Accommodation</a></li>
+        			<li><a href="#">Activity</a></li>
+      			</ul>
+    		</div>
+  		</div>
+	</nav>
+
+	<div class="page-wrap">
+	<div class="container-fluid" style="padding-top: 15px;">
+		<div class="col-sm-2">
+			<div class="row content">
+				{# logo start #}
+                    <a href="{% url 'member:index' %}" class="">
+                        <img src="{% static 'img/logo.png' %}" class="retina" alt="logo">
+                    </a>
+                {# logo end #}
+				<ul class="nav nav-pills nav-stacked">
+					<li class="active"><a href="{% url 'member:superadmin' %}">Accommodation</a></li>
+					<li><a href="{% url 'member:superadminactivity' %}">Activity</a></li>
+				</ul><br>
+			</div>
+		</div>
+
+		<div class="col-sm-10">
+			<div class="well">
+				<div>
+					<h1>Accommodation</h1>
+				</div>	
+					<!-- Button to trigger the action -->
+					<p>
+						<button type="button" class="btn btn-primary js-create-acc" data-url="{% url 'member:accommodationCreate' %}">
+							<span class="glyphicon glyphicon-plus"></span> Add New
+						</button>
+					</p>
+					<div style="overflow-x:auto;">
+				<table class="table" id="acc-table">
+					<thead>
+						<tr>
+							<th>No</th>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Amount</th>
+							<th>Price</th>
+							<th>Quantity</th>
+							<th>Details</th>
+							<th>Image</th>
+							<th>Option</th>
+						</tr>
+					</thead>
+					<tbody id="accommodation-tboby">
+					{% for accommodations in accommodation %}
+						<tr id="accommodation-record-id_{{ accommodations.id }}">
+   						 	<td>{{ forloop.counter }}</td>
+   						 	<td>{{ accommodations.name }}</td>
+   						 	<td>{{ accommodations.type }}</td>
+  						  	<td>{{ accommodations.amount }}</td>
+  						  	<td>${{ accommodations.price }}</td>
+ 						   	<td>{{ accommodations.quantity }}</td>
+  						  	<td>{{ accommodations.detail }}</td>
+  						  	<td>{{ accommodations.image }}</td>
+  						  	<td>
+     						<!-- <button type="button" class="btn btn-warning btn-sm js-update-acc" data-url="{% url 'member:accommodation_update' accommodations.id %}"><span class="glyphicon glyphicon-pencil" style="width:38px;"></span>Edit -->
+     						<button type="button" class="btn btn-warning btn-sm js-update-acc" data-url="{% url 'member:accommodation_update' accommodations.id %}"><span class="glyphicon glyphicon-pencil" style="width: 38px;"></span>Edit</button>
+    						<button type="button" class="btn btn-danger btn-sm js-delete-accommodation"
+    						  data-url="{% url 'member:accommodation_delete' accommodations.id %}"><span class="glyphicon glyphicon-trash"></span> Delete
+      						</button>
+  						  	</td>
+ 						</tr>
+					{% empty %}
+ 						<tr>
+  						  <td colspan="8" class="text-center bg-warning">No Accommodation</td>
+  						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+				</div>
+				<div class="modal fade" id="modal-acc">
+					<div class="modal-dialog">
+						<div class="modal-content">
+								
+						</div>
+					</div>
+				</div>
+			</div>
+
+ 		</div>
+	</div>
+</div>
+	{# body content ends #}
+{% endblock %}

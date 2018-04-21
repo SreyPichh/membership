@@ -1,0 +1,20 @@
+{% for accommodations in accommodation %}
+  <tr>
+    <td>{{ accommodations.id }}</td>
+    <td>{{ accommodations.name }}</td>
+    <td>{{ accommodations.type }}</td>
+    <td>{{ accommodations.amount }}</td>
+    <td>${{ accommodations.price }}</td>
+    <td>{{ accommodations.quantity }}</td>
+    <td>{{ accommodations.detail }}</td>
+    <td>{{ accommodations.image }}</td>
+    <td>
+      <button type="button" class="btn btn-warning btn-sm js-update-acc" data-url="{% url 'member:accommodation_update' accommodations.id %}"><span class="glyphicon glyphicon-pencil"></span>Edit
+      </button>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="8" class="text-center bg-warning">No Accommodation</td>
+  </tr>
+{% endfor %}

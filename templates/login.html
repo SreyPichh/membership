@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="login login-bg">
+
+        <div class="container">
+            <div class="login-logo text-center">
+                <a href="{% url 'member:index' %}"> <img class="retina" src="{% static 'img/logo.png' %}" alt=""/></a>
+            </div>
+            <div class="login-box btn-rounded login-bg-input border-less-input">
+                <form id="login-form" name="login-form" class="" action="{% url 'member:login' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="text-center"><h3>LOGIN</h3></div>
+                    <p class="text-danger no-margin">{{ error_message }}</p>
+                    <div class="form-group">
+                        <input type="email" id="login-form-username" name="email" value="" class="form-control" placeholder="Login ID">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" id="login-form-password" name="password" value="" class="form-control " placeholder="Password">
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-small btn-dark-solid full-width btn-rounded" id="login-form-submit" name="login-form-submit" value="login">Login</button>
+                    </div>
+                    {% comment %}<div class="login-social-link">
+                        <a href="index.html" class="facebook">
+                            Facebook
+                        </a>
+                        <a href="index.html" class="twitter">
+                            Twitter
+                        </a>
+                    </div>{% endcomment %}
+
+                    <div class="form-group">
+                        <input type="checkbox" value="remember-me" id="checkbox1"> <label for="checkbox1">Remember me
+                        </label>
+                        <label>New User?<a href="{% url 'member:register' %}">Register</a></label>
+                        <a class="pull-right" data-toggle="modal" href="{% url 'member:forgotpassword' %}"> Forgot Password?</a>
+                    </div>
+                </form>
+            </div>
+            <div class="copyright-row text-center dark-txt">
+                Copyrights © All Rights Reserved by  <a href="#" class="theme-color">Kirirom Institute of Technology</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

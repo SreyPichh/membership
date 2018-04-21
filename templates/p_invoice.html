@@ -1,0 +1,49 @@
+{% extends 'pdf_base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>Invoice {{ invoice.reservation_no|safe }}</title>
+    <style>
+        .invoice_wrapper {
+            webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.75);
+            box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.75);
+        }
+
+        @page {
+            size: letter portrait;
+        }
+        h3{
+            top: 0;
+            float: right;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="invoice_wrapper">
+        {% include 'invoice_card.html' %}
+    </div>
+{% endblock %}
+
+{% comment %}
+{% block ajax_script %}
+    <script>
+
+        $(document).ready(function () {
+
+            var total_price = 0;
+
+            $('td[data-name=r_price]').each(function () {
+                r_price = $(this).attr('data-price');
+                total_price = parseInt(r_price) + total_price;
+            });
+            console.log(total_price);
+
+            $('td[data-name=t_price]').text('$ ' + total_price);
+
+        });
+
+    </script>
+{% endblock %}{% endcomment %}

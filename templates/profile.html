@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>Profile</title>
+{% endblock %}
+
+{% block ajax_style %}
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    {% include 'include/navbar.html' %}
+
+    <!--page title start-->
+    <section class="page-title page-title-center">
+        <div class="container">
+            <h2 class="text-uppercase">Profile</h2>
+        </div>
+    </section>
+    <!--page title end-->
+
+    <div class="page-wrapper">
+        <div class="main">
+        <div class="main-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4 col-lg-3">
+                        <div class="sidebar">
+                            <div class="widget">
+                                <form id="img-form" action="{% url 'member:edit_profile_picture' %}" method="post" enctype="multipart/form-data">
+                                    <div class="user-photo">
+                                        {% csrf_token %}
+                                        {% if not user.profile_pic %}
+                                            <img id="profile_pic" src="{{ user.profile_pic }}" alt="User Photo">
+                                        {% else %}
+                                            <img id="profile_pic" src="{{ user.profile_pic.url }}" alt="User Photo">
+                                        {% endif %}
+                                        <input type="file" name="profile_pic" class="user-photo-action" id="reg-form-img" placeholder="Click here to reupload" value="">
+                                        <span class="user-photo-action">Click here to reupload</span>
+                                    </div><!-- /.user-photo -->
+                                    <input id="img-submit" type="submit" href="#" class="btn btn-primary btn-xs" value="Save">
+                                </form>
+                            </div><!-- /.widget -->
+
+
+                            <div class="widget">
+
+                                <ul class="menu-advanced">
+                                    <li class="active"><a href=""><i class="fa fa-user"></i> Edit
+                                        Profile</a></li>
+                                    <li><a href="{% url 'member:invoice' %}"><i class="fa fa-file-text-o"></i> Booked's Invoice</a></li>
+                                    <li><a href="{% url 'member:logout' %}"><i class="fa fa-sign-out"></i> Logout</a></li>
+                                </ul>
+                            </div><!-- /.widget -->
+
+                        </div><!-- /.sidebar -->
+                    </div><!-- /.col-* -->
+                    <div class="col-sm-8 col-lg-9">
+                        <div class="content">
+                            <div class="page-title-superlist">
+                                <h1>{{ user.name }}</h1>
+                            </div><!-- /.page-title -->
+
+                            <div class="background-white box-shadow p20 mb30">
+                                <form id="save_contact_info" novalidate>
+                                    {% csrf_token %}
+                                    <h3 class="page-title-superlist">
+                                    Contact Information
+
+                                    <input type="submit" href="#" class="btn btn-primary btn-xs pull-right" value="Save">
+                                </h3>
+
+                                    <div class="row">
+                                    <div class="form-group col-sm-6">
+                                        <label>Name</label>
+                                        <input id="name" name="name" type="text" class="form-control" value="{{ user.name }}">
+                                    </div><!-- /.form-group -->
+
+                                    <div class="form-group col-sm-6">
+                                        <label>Username</label>
+                                        <input id="surname" name="surname" type="text" class="form-control" value="{{ user.name }}">
+                                    </div><!-- /.form-group -->
+
+                                    <div class="form-group col-sm-6">
+                                        <label>E-mail</label>
+                                        <input id="email" name="email" type="email" class="form-control" value="{{ user.email }}">
+                                    </div><!-- /.form-group -->
+
+                                    <div class="form-group col-sm-6">
+                                        <label>Phone</label>
+                                        <input id="phone" name="phone" type="text" class="form-control" value="{{ user.phone }}">
+                                    </div><!-- /.form-group -->
+                                </div><!-- /.row -->
+                                </form>
+                            </div>
+
+                            <div class="background-white box-shadow p20 mb30">
+                                <form id="save_address_info" action="" method="post">
+                                    {% csrf_token %}
+                                    <h3 class="page-title-superlist">
+                                        Address
+
+                                        <input type="submit" href="#" class="btn btn-primary btn-xs pull-right" value="Save">
+                                    </h3>
+
+                                    <div class="row">
+                                    <div class="form-group col-sm-6">
+                                        <label>State</label>
+                                        <input id="state" type="text" class="form-control" value="{{ user.state }}">
+                                    </div><!-- /.form-group -->
+
+                                    <div class="form-group col-sm-6">
+                                        <label>City</label>
+                                        <input id="city" type="text" class="form-control" value="{{ user.city }}">
+                                    </div><!-- /.form-group -->
+
+                                    <div class="form-group col-sm-6">
+                                        <label>Street</label>
+                                        <input id="street" type="text" class="form-control" value="{{ user.street }}">
+                                    </div><!-- /.form-group -->
+
+                                    <div class="form-group col-sm-3">
+                                        <label>House Number</label>
+                                        <input id="house_number" type="text" class="form-control" value="{{ user.house_num }}">
+                                    </div><!-- /.form-group -->
+
+                                    <div class="form-group col-sm-3">
+                                        <label>ZIP</label>
+                                        <input id="zip" type="text" class="form-control" value="{{ user.zip_num }}">
+                                    </div><!-- /.form-group -->
+                                </div><!-- /.row -->
+                                </form>
+                            </div>
+                        </div><!-- /.content -->
+                    </div><!-- /.col-* -->
+                </div><!-- /.row -->
+            </div><!-- /.container -->
+        </div><!-- /.main-inner -->
+    </div><!-- /.main -->
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+    {% include 'include/footer.html' %}
+{% endblock %}
+
+{% block ajax_script %}
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="{% static 'js/edit_profile.js' %}"></script>
+{% endblock %}

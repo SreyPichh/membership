@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>accommodation</title>
+{% endblock %}
+
+{% block ajax_style %}
+    <link rel="stylesheet" href="{% static 'css/lightslider.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% include 'include/navbar.html' %}
+
+    {% comment %}start slider{% endcomment %}
+    <div class="accommodation-image">
+        <div class="item">
+            <div class="clearfix">
+                <ul id="image-gallery" class="gallery list-unstyled cS-hidden">
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (1).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (1).jpg' %}" alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (2).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (2).jpg' %}" alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (3).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (3).jpg' %}" alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (4).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (4).jpg' %}" alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (5).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (5).jpg' %}" alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (6).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (6).jpg' %}" alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (7).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (7).jpg' %}" alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (8).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (8).jpg' %}" alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (9).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (9).jpg' %}" alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (10).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (10).jpg' %}"
+                             alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (11).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (11).jpg' %}"
+                             alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (12).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (12).jpg' %}"
+                             alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (13).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (13).jpg' %}"
+                             alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (14).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (14).jpg' %}"
+                             alt="">
+                    </li>
+                    <li data-thumb="{% static 'img/accommodation/slider/slider (15).jpg' %}">
+                        <img class="img-responsive" src="{% static 'img/accommodation/slider/slider (15).jpg' %}"
+                             alt="">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% comment %}end slider{% endcomment %}
+
+    <div class="page-wrapper">
+        <div class="main">
+            <div class="main-inner">
+                <div class="container">
+                    <div class="container-fluid">
+                        <div class="pull-left"><h1 class="text-uppercase">bungalow</h1></div>
+                        <div class="pull-right"><a class="btn btn-primary btn-xs" href="">Book Now</a></div>
+                    </div>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+                        the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley
+                        of type and scrambled it to make a type specimen book. It has survived not only five centuries,
+                        but also the leap into electronic typesetting, remaining essentially unchanged. It was
+                        popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+                        and more recently with desktop publishing software like Aldus PageMaker including versions of
+                        Lorem Ipsum.</p>
+
+                    <h3 class="text-uppercase">Reservation</h3>
+                    <ul>
+                        <li><span class="text-uppercase">tel</span>: (+855)96-2222-735, (+855)78-777-33 for Sales,
+                            (+855)78-777-284 to contact vKirirom Resort
+                        </li>
+                        <li><span class="text-uppercase">email</span>: info@vkirirom.com</li>
+                    </ul>
+                    <h3 class="text-uppercase">Note:</h3>
+                    <ul>
+                        <li>All rates are quoted in US Dollar, including taxes.</li>
+                        <li>Reservation can be cancelled free for charge within 48hours.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+    {% include 'include/footer.html' %}
+{% endblock %}
+
+{% block slide_script %}
+    <script src="{% static 'js/lightslider.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#image-gallery').lightSlider({
+                gallery: true,
+                item: 1,
+                thumbItem: 15,
+                slideMargin: 0,
+                speed: 500,
+                auto: false,
+                loop: true,
+                onSliderLoad: function () {
+                    $('#image-gallery').removeClass('cS-hidden');
+                }
+            });
+        });
+    </script>
+{% endblock %}

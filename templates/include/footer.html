@@ -1,0 +1,49 @@
+{% load staticfiles %}
+
+<footer id="footer" class="dark">
+    <div class="primary-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="f-logo-center">
+                        <a href="{% url 'member:index' %}" class="m-bot-20 footer-logo">
+                        <img src="{% static 'img/logo-dark.png' %}" class="retina img-center"  alt="">
+                    </a>
+                    </div>
+                    <p class="">vKirirom Pine Resort is located amongst the pine trees of Kirirom Mountain. Here at vKiriom, we try to preserve the natural beauty of the environment. Our building locations are properly studied so that we avoid cutting down many trees.</p>
+                </div>
+                {% comment %}<div class="col-md-3">
+                    <h3 class="">Kirirom Institute of Technology</h3>
+                    <p>KITadapts a new style of learning with an effective new educational techniques as a boarding school.</p>
+                    <span><a href="">Enroll here!!</a></span>
+                    <p>New university for the future in Kirirom Mountain under the vKririom Project. An educational approach that stands amongst the forest.</p>
+                    <span><a href="">More About KIT</a></span>
+                </div>{% endcomment %}
+                <div class="col-md-4">
+                    <h3 class="text-center" style="color: white">THE MEANING OF OUR LOGO</h3>
+                    <p>In the logo of vKirirom - you will find '<span style="color: orange;">v</span>' in orange and '<span style="color: green;">Kirirom</span>' in green. The orange colour represents the people who live in Kirirom. This is the colour of joy and creativity. It also reminds us of the robes monks wear in Cambodia. The green represents the nature and its beauty.</p>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="text-center" style="color: white;">STAY CONNECTED</h3>
+                    {% comment %}<iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebook&tabs=timeline&width=340&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId" width="380" height="250" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>{% endcomment %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="secondary-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <span class="m-top-10">Copyright @2017 by <a href="#" class="f-link">Kirirom Institute of Technology</a> | All Rights Reserved</span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="social-link circle pull-right">
+                            <a href="#"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-youtube"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</footer>

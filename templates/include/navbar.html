@@ -1,0 +1,49 @@
+{% load staticfiles %}
+
+{#header start#}
+        <header id="header" class="header-full-width sticky">
+            <div class="header-sticky light-header">
+                <div class="container">
+                    <div id="massive-menu" class="menuzord">
+                        {# logo start #}
+                        <a href="{% url 'member:index' %}" class="logo-brand">
+                            <img src="{% static 'img/logo.png' %}" class="retina" alt="">
+                        </a>
+                        {# logo end #}
+
+                        {# menu start #}
+
+                        <ul class="menuzord-menu pull-left">
+                            <li><a href="{% url 'member:index' %}"></a></li>
+                        </ul>
+
+                        {% comment %}Left navbar{% endcomment %}
+                        <ul class="menuzord-menu pull-right">
+                            <li><a href="{% url 'member:accommodation' %}">Accommodation</a></li>
+                            <li><a href="{% url 'member:activity' %}">Activity</a></li>
+                            <li>
+                                {% if user.name %}
+                                    <a href="{% url 'member:profile' %}">{{ user.name }}</a>
+                                    <ul class="dropdown">
+                                        <li><a href="{% url 'member:invoice' %}">Book's Invoice</a></li>
+                                        <li><a href="{% url 'member:logout' %}">Logout</a></li>
+                                    </ul>
+                                {% else %}
+                                    <a href="{% url 'member:login' %}">Login/Register</a>
+                                    <ul class="dropdown">
+                                        <li><a href="{% url 'member:login' %}">Login</a></li>
+                                        <li><a href="{% url 'member:register' %}">Register</a></li>
+                                    </ul>
+                                {% endif %}
+                            </li>
+                            <li class="nav-icon nav-divider">
+                                <a href="javascript:void(0)">|</a>
+                            </li>
+                            <li><a href="">Book Now</a></li>
+                        </ul>
+                        {# menu end #}
+                    </div>
+                </div>
+            </div>
+        </header>
+        {# End header #}

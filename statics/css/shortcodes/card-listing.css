@@ -1,0 +1,682 @@
+/*------------------------------------------------------------------
+[ 19. Listing Cards ]
+*/
+.cards-wrapper {
+    margin-bottom: -30px;
+}
+
+.card {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 300px;
+    margin: 0px 0px 30px 0px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+}
+
+.card.card-tall {
+    height: 630px;
+}
+
+.card:before {
+    background: -webkit-linear-gradient(top, rgba(54, 54, 54, 0) 0%, rgba(54, 54, 54, 0.7) 50%);
+    background: linear-gradient(to bottom, rgba(54, 54, 54, 0) 0%, rgba(54, 54, 54, 0.7) 50%);
+    content: '';
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    -webkit-transform: translateY(50%);
+    transform: translateY(50%);
+    transition: all ease .35s;
+    width: 100%;
+}
+
+.card:after {
+    background-color: rgba(0, 0, 0, 0.3);
+    bottom: 0px;
+    content: '';
+    left: 0px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    z-index: 1;
+}
+
+.card:hover:before {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+    transform: translateY(0%);
+}
+
+.card:hover .card-content {
+    padding-top: 0px;
+}
+
+.card:hover .card-meta {
+    opacity: 1;
+    height: 40px;
+}
+
+.card:hover .card-actions {
+    opacity: 1;
+}
+
+.card-background img {
+    height: auto;
+    width: 100%;
+}
+
+.card-content {
+    left: 50%;
+    padding: 0px 30px;
+    padding-top: 60px;
+    position: absolute;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transition: all ease .35s;
+    width: 100%;
+    z-index: 2;
+}
+
+.card-content h2 {
+    color: #fff;
+    font-weight: 300;
+    margin: 0px;
+    margin-bottom: 5px;
+}
+
+.card-content h2 a {
+    color: #fff;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.card-content h2 a:hover {
+    text-decoration: none;
+}
+
+.card-rating {
+    color: #ffd925;
+    font-size: 15px;
+    transition: all ease .35s;
+}
+
+.card-rating i {
+    margin: 0px 2px;
+}
+
+.card-meta {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 300;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all ease .35s;
+}
+
+.card-actions {
+    color: #fff;
+    opacity: 0;
+    margin-top: 20px;
+    text-align: center;
+    transition: all ease .35s;
+}
+
+.card-actions .fa {
+    border: 1px solid #fff;
+    border-radius: 50%;
+    color: #fff;
+    height: 32px;
+    margin: 0px 6px;
+    padding-top: 8px;
+    transition: all ease .2s;
+    width: 32px;
+}
+
+.card-actions .fa:hover {
+    background-color: #fff;
+    color: #363636;
+}
+
+.card-actions .fa.marked {
+    background-color: #fff;
+    color: #363636;
+}
+
+.card-actions .fa.marked.fa-heart-o:before {
+    color: #d81814;
+    content: "\f004";
+}
+
+.card-actions .fa.marked.fa-bookmark-o:before {
+    color: #009f8b;
+    content: "\f02e";
+}
+
+.card-actions .fa-search {
+    font-size: 18px;
+    height: 40px;
+    padding-top: 9px;
+    width: 40px;
+}
+
+.card-label {
+    background-color: #c6af5c;
+    color: #fff;
+    left: 50%;
+    font-size: 13px;
+    padding: 3px 15px;
+    position: absolute;
+    top: 0px;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    z-index: 2;
+}
+
+.card-label a {
+    color: #fff;
+}
+
+.card-label a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+.cards-simple-wrapper {
+    margin-bottom: -30px;
+}
+
+.card-simple {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-backface-visiblity: hidden;
+    margin-bottom: 30px;
+    overflow: hidden;
+    -webkit-transform: translateZ(0px);
+}
+
+.card-simple:hover .card-simple-background:before {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+    transform: translateY(0%);
+    -webkit-backface-visiblity: hidden;
+}
+
+.card-simple:hover .card-simple-label {
+    margin-top: -25px;
+}
+
+.card-simple:hover .card-simple-content {
+    padding-top: 0px;
+    transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    -webkit-backface-visiblity: hidden;
+}
+
+.card-simple:hover .card-simple-rating {
+    opacity: 1;
+    transition-delay: .05s;
+    -webkit-backface-visiblity: hidden;
+}
+
+.card-simple:hover .card-simple-actions {
+    opacity: 1;
+    transition-delay: .1s;
+    -webkit-backface-visiblity: hidden;
+}
+
+.card-simple-background {
+    height: 200px;
+    position: relative;
+}
+
+.card-simple-background img {
+    width: 100%;
+}
+
+.card-simple-background:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: -webkit-linear-gradient(top, rgba(54, 54, 54, 0) 0%, rgba(54, 54, 54, 0.7) 75%);
+    background: linear-gradient(to bottom, rgba(54, 54, 54, 0) 0%, rgba(54, 54, 54, 0.7) 75%);
+    content: '';
+    opacity: 0;
+    -webkit-transform: translateY(50%);
+    transform: translateY(50%);
+    transition: all ease .35s;
+}
+
+.card-simple-background:after {
+    background-color: rgba(0, 0, 0, 0.3);
+    bottom: 0px;
+    content: '';
+    display: block;
+    left: 0px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    z-index: 1;
+}
+
+.card-simple-label {
+    background-color: #c6af5c;
+    color: #fff;
+    left: 50%;
+    font-size: 13px;
+    padding: 3px 15px;
+    position: absolute;
+    top: 0px;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    transition: all ease .35s;
+    z-index: 2;
+}
+
+.card-simple-label a {
+    color: #fff;
+}
+
+.card-simple-label a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+.card-simple-content {
+    left: 50%;
+    padding-top: 85px;
+    position: absolute;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transition: all ease .35s;
+    width: 100%;
+    z-index: 2;
+}
+
+.card-simple-content h2 {
+    color: #fff;
+    display: block;
+    font-size: 20px;
+    margin: 0px;
+    overflow: hidden;
+    padding: 0px 20px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card-simple-content h2 a {
+    color: #fff;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.card-simple-content h2 a:hover {
+    text-decoration: none;
+}
+
+.card-simple-rating {
+    color: #ffd925;
+    margin-top: 10px;
+    opacity: 0;
+    font-size: 15px;
+    text-align: center;
+    transition: all ease .35s;
+}
+
+.card-simple-rating i {
+    margin-right: 2px;
+}
+
+.card-simple-actions {
+    color: #fff;
+    margin-top: 20px;
+    opacity: 0;
+    text-align: center;
+    transition: all ease .35s;
+}
+
+.card-simple-actions .fa {
+    border: 1px solid #fff;
+    border-radius: 50%;
+    color: #fff;
+    height: 32px;
+    margin: 0px 6px;
+    padding-top: 8px;
+    transition: all ease .2s;
+    width: 32px;
+}
+
+.card-simple-actions .fa:hover {
+    background-color: #fff;
+    color: #363636;
+}
+
+.card-simple-actions .fa-search {
+    font-size: 18px;
+    height: 40px;
+    padding-top: 9px;
+    width: 40px;
+}
+
+.card-simple-price {
+    background-color: #009f8b;
+    bottom: 0px;
+    color: #fff;
+    font-size: 13px;
+    left: 50%;
+    padding: 3px 15px;
+    position: absolute;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.card-row {
+    background-color: #fff;
+    margin: 0px 0px 30px 0px;
+}
+
+.card-row:last-child {
+    margin-bottom: 0px;
+}
+
+.card-row-inner {
+    display: table;
+    width: 100%;
+}
+
+.card-row-image, .card-row-body, .card-row-properties {
+    display: table-cell;
+    vertical-align: top;
+}
+
+@media (max-width: 1199px) {
+    .card-row-image, .card-row-body, .card-row-properties {
+        display: block;
+    }
+}
+
+.card-row-image {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 200px;
+    position: relative;
+    width: 262px;
+}
+
+@media (max-width: 1199px) {
+    .card-row-image {
+        width: 100%;
+    }
+}
+
+.card-row-body {
+    padding: 30px;
+}
+
+.card-row-properties {
+    padding: 30px 30px 30px 30px;
+    width: 260px;
+}
+
+@media (max-width: 1199px) {
+    .card-row-properties {
+        padding: 0px 30px 30px 30px;
+        width: 100%;
+    }
+}
+
+.card-row-title {
+    font-size: 18px;
+    margin: 0px 0px 20px 0px;
+    padding: 0px;
+}
+
+.card-row-title a {
+    color: #363636;
+}
+
+.card-row-properties dl {
+    margin: 0px;
+    padding: 0px;
+}
+
+.card-row-properties dd {
+    float: left;
+    line-height: 36px;
+}
+
+.card-row-properties dt {
+    border-bottom: 1px dashed #e9e9e9;
+    line-height: 36px;
+    text-align: right;
+}
+
+.card-row-properties dt:last-child {
+    border-bottom: 0px;
+}
+
+.card-row-rating {
+    color: #ffd925;
+}
+
+.card-row-label {
+    background-color: #c6af5c;
+    color: #fff;
+    left: 50%;
+    font-size: 13px;
+    padding: 3px 15px;
+    position: absolute;
+    top: 0px;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    z-index: 2;
+}
+
+.card-row-label a {
+    color: #fff;
+}
+
+.card-row-label a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+.card-row-price {
+    background-color: #009f8b;
+    bottom: 0px;
+    color: #fff;
+    font-size: 13px;
+    left: 50%;
+    padding: 3px 15px;
+    position: absolute;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.cards-system {
+    margin: 0px -15px -30px -15px;
+}
+
+.card-system {
+    float: left;
+    margin: 0px 0px 30px 0px;
+    padding: 0px 15px;
+    width: 50%;
+}
+
+@media (max-width: 991px) {
+    .card-system {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1500px) {
+    .card-system {
+        width: 100%;
+    }
+}
+
+.card-system-inner {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.card-system-image {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    float: left;
+    height: 137px;
+    position: relative;
+    width: 137px;
+}
+
+.card-system-image a {
+    bottom: 0px;
+    display: block;
+    left: 0px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+@media (max-width: 767px) {
+    .card-system-image {
+        height: 120px;
+        float: none;
+        width: 100%;
+    }
+}
+
+.card-system-content {
+    margin-left: 157px;
+}
+
+@media (max-width: 767px) {
+    .card-system-content {
+        margin: 0px;
+        padding: 0px 20px 20px 20px;
+    }
+}
+
+.card-system-content h2 {
+    color: #363636;
+    display: block;
+    font-size: 15px;
+    font-weight: 400;
+    margin: 20px 0px 0px 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card-system-content h2 a {
+    color: #363636;
+}
+
+.card-system-content h2 a:hover {
+    color: #009f8b;
+}
+
+.card-system-content h3 {
+    color: rgba(54, 54, 54, 0.6);
+    font-size: 12px;
+    margin: 7px 0px 30px 0px !important;
+}
+
+.card-small {
+    background-color: #fff;
+    margin: 0px 0px 20px 0px;
+    padding: 10px;
+}
+
+.card-small:before, .card-small:after {
+    content: " ";
+    display: table;
+}
+
+.card-small:after {
+    clear: both;
+}
+
+.card-small-image {
+    float: left;
+}
+
+.card-small-image img {
+    width: 80px;
+}
+
+.card-small-content {
+    margin-left: 90px;
+}
+
+.card-small-content h3 {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0px 0px 0px 0px;
+    padding: 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card-small-content h3 a {
+    color: #444;
+}
+
+.card-small-content h4 {
+    font-size: 11px;
+    margin: 5px 0px 0px 0px;
+}
+
+.card-small-content h4 a {
+    color: rgba(54, 54, 54, 0.6);
+}
+
+.card-small-price {
+    color: #009f8b;
+    font-size: 12px;
+    font-weight: 400;
+    margin: 7px 0px 0px 0px;
+}
+
+.card-row.card-border{
+    -webkit-box-shadow: 0px 0px 5px -1px rgba(117,104,117,1);
+    -moz-box-shadow: 0px 0px 5px -1px rgba(117,104,117,1);
+    box-shadow: 0px 0px 5px -1px rgba(117,104,117,1);
+}
+
+.card-row.card-border:hover {
+    /*border: 0.1px solid gray;*/
+    /*-webkit-box-shadow: 0px 0px 0px;*/
+    /*-moz-box-shadow: 0px 0px 0px;*/
+    /*box-shadow: 0px 0px 0px;*/
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.75);
+}
+
+.btn-book{
+    padding: 7px 10px;
+    background: #d6b161;
+    color: #FFFFFF;
+}
+
+.card-btn {
+    padding-top: 10px;
+}

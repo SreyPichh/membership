@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>vK Membership</title>
+{% endblock %}
+
+{% block content %}
+
+        {% include 'include/navbar.html' %}
+
+        {# body content start #}
+        <section class="body-content">
+            <div class="page-content">
+                <div class="container">
+                    {# small header #}
+                    <div class="row">
+                        <div class="heading-title text-center">
+                            <h2 class="text-uppercase page-title page-title-center">Activity Booking</h2>
+                            <div>
+                              <form class="navbar-form navbar-left" role="search" method="get" action="{% url 'member:index' %}">
+                                  <div class="form-group">
+                                    <input type="text" class="form-control" name="q" value="{{ request.GET.q }}">
+                                  </div>
+                                  <button type="submit" class="btn btn-primary">Search</button>
+                              </form>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="container-fluid text-left">
+                          <div class="row">
+                            <div class="col-sm-7"><h4>ACTIVITY TYPE</h4></div>
+                            <div class="col-sm-3 text-center"><h4>QUANTITY</h4></div>
+                            <div class="col-sm-2 text center"><h4>TOTAL PRICE</h4></div>
+                          </div>
+                        </div>
+
+                        <div class="container">
+                          <div class="row">
+                            <div class="col-sm-10">
+                              <div class="list-group">
+                                {% for activities in activity %}
+                                <div class="list-group-item">
+                                  <div class="media col-md-3">
+                                    <figure class="pull-left">
+                                      <img class="media-object img-rounded img-responsive"  src="{{ activities.image.url }}" alt="placehold.it/350x250" >
+                                    </figure>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <h4 class="list-group-item-heading"> {{ activities.name }} </h4>
+                                    <p class="list-group-item-text">{{ activities.detail }}</p><br/>
+
+                                    <!-- <p>Date: <input type="text" id="datepicker"></p>
+                                    <span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span> -->
+                                    <div class="input-group date" st="{{ activities.name }}">
+                                      <div class="col-md-5">
+                                      <input type="text" class="form-control" id="datetimepicker1" />
+                                      <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                      </span>
+                                    </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="col-md-3 text-center">
+                                    <select id="the_option" class="form-control" onblur="validate()">
+                                      <option value="1">1</option>
+                                      <option value="2">2</option>
+                                      <option value="3">3</option>
+                                      <option value="4">4</option>
+                                    </select>
+
+                                    <p>{{ activities.price }}</p>
+                                  </div>
+                                </div>
+                                {% endfor %}
+                              </div>
+                            </div>
+
+                            <div class="col-6 col-md-2 sidebar-offcanvas">
+                              <div class="">
+                                <button type="submit" name="btn-book" class="btn btn-primary" id="btn-book" disabled="disabled" style="position: absolute, top:50%;">BOOK NOW</button>
+                              </div>
+                            </div>
+	                         </div>
+                         </div>
+
+
+                       </div>
+                     </div>
+                   </section>
+        {# body content end #}
+{% endblock %}
+
+{% block footer %}
+    {% include 'include/footer.html' %}
+{% endblock %}
+
+{% block slide_script %}
+    <!-- SLIDER REVOLUTION INIT  -->
+<script src="{% static 'js/moment.min.js' %}"></script>
+<script src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'js/jquery.datetimepicker.full.js' %}"></script>
+
+
+
+<script>
+  $(document).ready('.date').each(function(){
+    this = $(this);
+    var test = this.attr('st');
+    test.datetimepicker();
+
+  });
+</script>
+<script>
+  function validate(){
+    var valid = true;
+    valid = checkData($(#the_optoin));
+
+    $("#btn-bok").attr("disabled", true);
+    if(valid){
+      $("#btn-book").attr("disabled",false);
+    }
+  }
+  function checkData(obj){
+    var amt = $(obj).attr("the_optoin");
+    $("."+amt+"-validation").html("");
+    $(obj).css("border", "");
+    if($(obj).val() == ""){
+        $(obj).css("border", "#FF0000 1px solid");
+        $("."+amt+"-validation").html("Required");
+        return false;
+    }
+    return true;
+  }
+</script>
+{% endblock %}

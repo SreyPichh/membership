@@ -1,0 +1,82 @@
+{% load staticfiles %}
+
+<div class="row">
+    <div class="col-sm-12 col-md-3">
+        <img src="{% static 'img/vKirirom.svg' %}" class="img-responsive" alt="this is qr code or logo">
+    </div>
+    <div class="col-sm-12 col-lg-9">
+        <h3 class="">Booking No: <span>{{ invoice.reservation_no|safe }}</span></h3>
+        <div style="overflow-x:auto;">
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>Date ordered:</td>
+                <td>{{ invoice.created|date }} {{ invoice.created|time }}</td>
+            </tr>
+            <tr>
+                <td>Guest Name:</td>
+                <td>{{ invoice.user|safe }}</td>
+            </tr>
+            <tr>
+                <td>Invoice Address</td>
+                <td>{{ invoice.user|safe }}</td>
+            </tr>
+            <tr>
+                <td>Expected-Date-Arrival</td>
+                <td>{{ invoice.checkin_date|safe }} 12:25am</td>
+            </tr>
+            <tr>
+                <td>Expected-Date-Departure</td>
+                <td>{{ invoice.checkout_date|safe }} 12:25am</td>
+            </tr>
+            <tr>
+                <td>Adults</td>
+                <td>{{ invoice.get_adult_data|safe }}</td>
+            </tr>
+            <tr>
+                <td>Children</td>
+                <td>{{ invoice.get_child_data|safe }}</td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 col-lg-12">
+        <div style="overflow-x:auto;">
+        <table class="table">
+            <thead class="thead-default">
+            <tr>
+                <th>#</th>
+                <th>Room</th>
+                <th>Amount</th>
+                <th>Number of Guest</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in invoice.get_room_data %}
+                <tr>
+                    <th scope="row">{{ item.index|safe }}</th>
+                    <td>{{ item.room|safe }}</td>
+                    <td>{{ item.amount|safe }}</td>
+                    <td>{{ item.guest_num|safe }}</td>
+                    <td data-name="r_price" data-price="{{ item.price|safe }}">$ {{ item.price|safe }}</td>
+                </tr>
+            {% endfor %}
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Total Price</td>
+                    <td data-name="t_price">$ {{ invoice.b_price }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+        </div>
+        <i class="fa fa-info-circle" aria-hidden="true"></i><i> This price we already included 10% of tax.</i>
+    </div>
+</div>
