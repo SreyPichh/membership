@@ -29,7 +29,6 @@ urlpatterns = [
     url(r'^edit_user_info_profile/$', views.edit_user_info_profile, name='edit_user_info_profile'),
     url(r'^edit_address_profile/$', views.edit_address_profile, name='edit_address_profile'),
     url(r'^edit_profile_picture/$', views.edit_profile_picture, name='edit_profile_picture'),
-    
 ]
 
 

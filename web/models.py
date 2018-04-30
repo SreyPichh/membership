@@ -297,7 +297,7 @@ class BookingInfo(models.Model):
     b_price = models.FloatField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     room_data = models.CharField(max_length=1000, null=True)
-    status = models.IntegerField(default= 1, choices=BOOKING_STATUS)
+    status = models.IntegerField(default=1, choices=BOOKING_STATUS)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 

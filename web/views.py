@@ -606,7 +606,7 @@ def accommodationdetail(request):
 
 
 @csrf_protect
-def booking(self, request):
+def booking(request):
     if request.method == 'POST':
         logging.debug(request.POST)
         form = BookingList(data=request.POST)
@@ -617,7 +617,7 @@ def booking(self, request):
             booking_list = json.loads(request.POST['list-booking'])
             logging.debug(booking_list)
             logging.debug(len(booking_list))
-            self.selected_room = []
+            selected_room = []
             total_price = 0
             for i in range(0, len(booking_list)):
                 room = Accommodation.objects.get(name=booking_list[i]['name'])
@@ -700,10 +700,18 @@ def handle_booking(request):
             logging.debug("I have save form")
         else:
             logging.debug("Form is Invalid")
+
+        subject = 'Booking accommodation'
+
+        message = 'Hello Administrator! I am sending this to alert you that user name %s has booked accommodation' % (
+            request.user)
+        from_email = settings.EMAIL_HOST_USER
+        receiver = ['phansreypich15@kit.edu.kh']
+        send_mail(subject, message, from_email, receiver, fail_silently=True)
         return redirect("/invoice")
 
 
-def handle_invoice(self, request):
+def handle_invoice(request):
     if request.method == "GET":
         invoices = []
         logging.debug(invoices)
@@ -721,15 +729,6 @@ def handle_invoice(self, request):
                 logging.debug(invoices)
             else:
                 logging.debug("Holy moly shit invoice.")
-
-        subject = 'Booking accommodation'
-        message = 'Hello Administrator! I am sending this to alert you that user name %s has booked %s' %(request.user, self.selected_room)
-        from_email = settings.EMAIL_HOST_USER
-        receiver = ['phansreypich15@kit.edu.kh']
-        logging.debug("this is here and just here!")
-        send_mail(subject, message, from_email, receiver, fail_silently=True)
-        logging.debug("successfully send email!")
-        logging.debug(receiver)
         return render(request, 'invoice.html', {'invoices': invoices})
 
 
@@ -819,7 +818,7 @@ def cancel_booking(request, reservation_no):
     booking_item.status=3
     booking_item.save()
     subject = 'Canceling booked accommodation'
-    message = 'Hello Administrator! I am sending this to alert you that user name %s has canceled booked %s' %(request.user, self.selected_room)
+    message = 'Hello Administrator! I am sending this to alert you that user name %s has canceled booked' %(request.user)
     from_email = settings.EMAIL_HOST_USER
     receiver = ['phansreypich15@kit.edu.kh']
     logging.debug("this is here and just here!")
