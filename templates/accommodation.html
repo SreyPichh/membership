@@ -25,7 +25,7 @@
                             <form action="{% url 'member:search' %}" class="form-search form-horizontal pull-right" id="custom-search-form">
                                 <div class="input-append span12">
                                     <!-- <label for="search" class="sr-only">Search</label> -->
-                                    <input type="text" class="search-query" name="search" id="accommodation_autocomplete" placeholder="Search...." value="{{ request.GET.search }}"><span class="glyphicon glyphicon-search"></span>
+                                    <input type="text" class="search-query" name="search" id="accommodation_autocomplete" placeholder="Search...." value="{{ request.GET.search }}"><span style="right:25px;" class="glyphicon glyphicon-search"></span>
                                 </div>
                             </form>
                         </div>
@@ -83,7 +83,7 @@
                                             <div class="card-row-image"
                                                  data-background-image="{{ accommo.image.url }}"
                                                  style="background-image: url({{ accommo.image.url }});">
-                                                <div class="card-row-label"><a href="">{{ accommo.name }}</a></div>
+                                                <div class="card-row-label"><strong><a href="">{{ accommo.name }}</a></strong></div>
                                                 <!-- /.card-row-label -->
 
                                                 <div class="card-row-price">${{ accommo.price }} / night</div><!-- -->

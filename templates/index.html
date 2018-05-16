@@ -27,7 +27,7 @@
                             <form action="{% url 'member:search' %}" class="form-search form-horizontal pull-right" id="custom-search-form">
                                 <div class="input-append span12">
                                     <!-- <label for="search" class="sr-only">Search</label> -->
-                                    <input type="text" class="search-query" name="search" id="accommodation_autocomplete" placeholder="Search...." value="{{ request.GET.search }}"><span class="glyphicon glyphicon-search"></span>
+                                    <input type="text" class="search-query" name="search" id="accommodation_autocomplete" placeholder="Search...." value="{{ request.GET.search }}"><span style="right:25px;" class="glyphicon glyphicon-search"></span>
                                 </div>
                             </form>
                         </div>
@@ -214,10 +214,11 @@
 
             //  Date Picker Implementation
             var today = moment().add(1, 'days').format('L');
-            var a = moment().add(1, 'days').format('MM-DD-YYYY');
-            var tomorrow = moment().add(2, 'days').format('L');
+            var a = moment().add(1, 'days').format('YYYY-MM-DD');
+            var tomorrow = moment().add(2, 'days').format('YYYY-MM-DD');
             console.log(today);
             console.log(a);
+            console.log(tomorrow);
 
             $('#datetimepicker-check-in').datetimepicker({
                 minDate: today,
@@ -246,12 +247,12 @@
                 $('#datetimepicker-check-out').data("DateTimePicker").minDate(next_day);
                 $('#datetimepicker-check-out').data("DateTimePicker").defaultDate(next_day);
                 //console.log(e.date);
-                date_checkin = moment(e.date).format('L');
-                date_checkout = moment(e.date).add(1, 'days').format('L');
+                date_checkin = moment(e.date).format('YYYY-MM-DD');
+                date_checkout = moment(e.date).add(1, 'days').format('YYYY-MM-DD');
                 console.log(date_checkin);
                 console.log(date_checkout);
                 //console.log(typeof(date_checkin));
-                a = moment(e.date).format('MM-DD-YYYY');
+                a = moment(e.date).format('YYYY-MM-DD');
                 $('#checkin-time').val(date_checkin);
                 $('#checkout-time').val(date_checkout);
 
@@ -260,16 +261,15 @@
 
             $('#datetimepicker-check-out').on("dp.change", function (e) {
                 //$('#datetimepicker-check-in').data("DateTimePicker").maxDate(e.date);
-                $('#checkout-time').val(moment(e.date).format('L'));
+                $('#checkout-time').val(moment(e.date).format('YYYY-MM-DD'));
                 console.log(moment(e.date).format('L'));
             });
 
             //  Availability Implementation without changing Checkin Date with auto run function
             var check_availability = (function availability() {
                 $("select").each(function () {
-                    $(this).find('option').remove();
                 });
-                $(".availability").each(function (index) {
+                    $(".availability").each(function (index) {
                     var name = $(this).attr('data-name');
                     var iD = $(this).attr('data-id');
                     var txt = $(this);
@@ -279,16 +279,17 @@
 
 
                     $.ajax({
-                        type: 'POST',
-                        url: '/accommodation/' + name + '/' + a + '/',
+                        type: 'GET',
+                        url: '/accommodation/' + a + '&'+ tomorrow + '/',
                         async: false,
                         cache: false,
                         contentType: false,
                         data: {
-                            'datein': today
+                            'datein': today,
+                            'dateout': tomorrow
                         },
                         headers: {
-                            'X-CSRFToken': csrfmiddlewaretoken
+                            'Content-type': 'application/json'
                         },
                         success: function (e) {
                             // Role Back Success

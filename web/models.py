@@ -228,7 +228,7 @@ class Accommodation(models.Model):
     price = models.FloatField()
     quantity = models.IntegerField(default=2)
     detail = models.TextField(max_length=1000)
-    image = models.FileField(upload_to='Accommodation/') #
+    image = models.FileField(upload_to='Accommodation/')
     image_360 = models.FileField(upload_to='Accommodation/image_360/', blank=True)
     status = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
@@ -256,11 +256,13 @@ class Accommodation(models.Model):
 
 
 class Activity(models.Model):
-    actid = models.UUIDField(default=uuid.uuid4, editable=False)
+    aid = models.UUIDField(default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)
     type = models.CharField(max_length=150)
-    price = models.CharField(max_length=150)
-    detail = models.CharField(max_length=1000)
+    amount = models.IntegerField(default=2)
+    quantity = models.IntegerField(default=2)
+    price = models.IntegerField()
+    detail = models.TextField(max_length=1000)
     image = models.FileField(upload_to=handle_upload_activity_img)
     status = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
@@ -274,6 +276,10 @@ class Activity(models.Model):
 
     def get_price(self):
         return self.price
+
+    def get_short_detail(self):
+        detail = self.detail[:250]
+        return detail
 
 
 class BookingInfo(models.Model):

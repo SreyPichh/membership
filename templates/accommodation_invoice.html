@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>Invoice</title>
+{% endblock %}
+
+{% block content %}
+    {% include 'include/navbar.html' %}
+
+    <!--page title start-->
+    <section class="page-title page-title-center">
+        <div class="container">
+            <h2 class="text-uppercase">Profile</h2>
+        </div>
+    </section>
+    <!--page title end-->
+
+    <div class="page-wrapper">
+        <div class="main">
+            <div class="main-inner">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-4 col-lg-3">
+                            <div class="sidebar">
+                                <div class="widget">
+                                    <form id="img-form" action="{% url 'member:edit_profile_picture' %}" method="post"
+                                          enctype="multipart/form-data">
+                                        <div class="user-photo">
+                                            {% csrf_token %}
+                                            {% if not user.profile_pic %}
+                                                <img id="profile_pic" src="{{ user.profile_pic }}" alt="User Photo">
+                                            {% else %}
+                                                <img id="profile_pic" src="{{ user.profile_pic.url }}" alt="User Photo">
+                                            {% endif %}
+                                            {#                                            <input type="file" name="profile_pic" class="user-photo-action"#}
+                                            {#                                                   id="reg-form-img" placeholder="Click here to reupload" value="">#}
+                                            {#                                            <span class="user-photo-action">Click here to reupload</span>#}
+                                        </div><!-- /.user-photo -->
+                                    </form>
+                                </div><!-- /.widget -->
+
+
+                                <div class="widget">
+
+                                    <ul class="menu-advanced">
+                                        <li><a href="{% url 'member:profile' %}"><i class="fa fa-user"></i> Edit
+                                            Profile</a></li>
+                                        <li class="active"><a href="{% url 'member:invoice' %}"><i
+                                                class="fa fa-file-text-o"></i> Booked's Invoice</a></li>
+                                        <li><a href="{% url 'member:logout' %}"><i class="fa fa-sign-out"></i>
+                                            Logout</a></li>
+                                    </ul>
+                                </div><!-- /.widget -->
+
+                            </div><!-- /.sidebar -->
+                        </div><!-- /.col-* -->
+                        <div class="col-sm-8 col-lg-9">
+                            <div class="content">
+                                <div class="page-title-superlist">
+                                    <h1>{{ user.name }}</h1>
+                                </div><!-- /.page-title -->
+                                {% if invoices %}
+                                    {% for invoice in invoices %}
+                                        <div class="background-white box-shadow p20 mb30">
+                                            <a id="{{ invoice.bid }}" class="btn_download" href="{% url 'member:invoice_download' invoice.bid %}"><i class="fa fa-arrow-circle-o-down"></i></a>
+                                            {% include 'invoice_card.html' %}
+                                            <div class="row">
+                                                <button data-invoice="{{ invoice.reservation_no }}" name="btn_cancel" class="btn btn-book pull-right" data-toggle="modal" data-target="#{{ invoice.reservation_no }}">Cancel
+                                                </button>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="{{ invoice.reservation_no }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                <div class="modal-header">
+                                                <div class="row">
+                                                <div class="col-xs-7 col-sm-7 col-md-7"><h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>Are you sure want to do this?</h5>
+                                                </div>
+                                                <div class="col-xs-5 col-sm-5 col-md-5">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                </div>
+                                                </div>
+                                                </div>
+                                                <div class="modal-body">...</div>
+                                                <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button><a name="{{ invoice.reservation_no }}" href="" class="btn btn-primary">Yes</a>
+                                                </div>
+                                                </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <h1>Book Any Accommodation Now!!!</h1>
+                                {% endif %}
+
+                            </div><!-- /.content -->
+                        </div><!-- /.col-* -->
+                    </div><!-- /.row -->
+                </div><!-- /.container -->
+            </div><!-- /.main-inner -->
+        </div><!-- /.main -->
+    </div>
+
+{% endblock %}
+
+{% block ajax_script %}
+    <script>
+
+        $(document).ready(function () {
+
+            {% comment %}var total_price = 0;
+
+            $('td[data-name=r_price]').each(function () {
+                r_price = $(this).attr('data-price');
+                total_price = parseInt(r_price) + total_price;
+            });
+            console.log(total_price);
+
+            $('td[data-name=t_price]').text('$ ' + total_price);{% endcomment %}
+
+            $('button[name=btn_cancel]').on('click', function () {
+                name_item = $(this).attr('data-invoice');
+                $("a[name=" + name_item + "]").attr('href', "/cancel_booking/" + name_item);
+            });
+
+        });
+
+    </script>
+{% endblock %}
+
+{% block footer %}
+    {% include 'include/footer.html' %}
+{% endblock %}

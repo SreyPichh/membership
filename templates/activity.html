@@ -5,133 +5,483 @@
     <title>vK Membership</title>
 {% endblock %}
 
+{% block ajax_style %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datetimepicker.min.css' %}">
+{% endblock %}
+
 {% block content %}
 
-        {% include 'include/navbar.html' %}
+    {% include 'include/navbar.html' %}
 
-        {# body content start #}
-        <section class="body-content">
-            <div class="page-content">
+    {# body content start #}
+    <div class="page-wrapper">
+        <div class="main">
+            <div class="main-inner">
                 <div class="container">
                     {# small header #}
                     <div class="row">
-                        <div class="heading-title text-center">
-                            <h2 class="text-uppercase page-title page-title-center">Activity Booking</h2>
-                            <div>
-                              <form class="navbar-form navbar-left" role="search" method="get" action="{% url 'member:index' %}">
-                                  <div class="form-group">
-                                    <input type="text" class="form-control" name="q" value="{{ request.GET.q }}">
-                                  </div>
-                                  <button type="submit" class="btn btn-primary">Search</button>
-                              </form>
-                            </div>
-                        </div>
-                        </div>
-                        <div class="container-fluid text-left">
-                          <div class="row">
-                            <div class="col-sm-7"><h4>ACTIVITY TYPE</h4></div>
-                            <div class="col-sm-3 text-center"><h4>QUANTITY</h4></div>
-                            <div class="col-sm-2 text center"><h4>TOTAL PRICE</h4></div>
-                          </div>
-                        </div>
-
-                        <div class="container">
-                          <div class="row">
-                            <div class="col-sm-10">
-                              <div class="list-group">
-                                {% for activities in activity %}
-                                <div class="list-group-item">
-                                  <div class="media col-md-3">
-                                    <figure class="pull-left">
-                                      <img class="media-object img-rounded img-responsive"  src="{{ activities.image.url }}" alt="placehold.it/350x250" >
-                                    </figure>
-                                  </div>
-                                  <div class="col-md-6">
-                                    <h4 class="list-group-item-heading"> {{ activities.name }} </h4>
-                                    <p class="list-group-item-text">{{ activities.detail }}</p><br/>
-
-                                    <!-- <p>Date: <input type="text" id="datepicker"></p>
-                                    <span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span> -->
-                                    <div class="input-group date" st="{{ activities.name }}">
-                                      <div class="col-md-5">
-                                      <input type="text" class="form-control" id="datetimepicker1" />
-                                      <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-calendar"></span>
-                                      </span>
-                                    </div>
-                                    </div>
-                                  </div>
-
-                                  <div class="col-md-3 text-center">
-                                    <select id="the_option" class="form-control" onblur="validate()">
-                                      <option value="1">1</option>
-                                      <option value="2">2</option>
-                                      <option value="3">3</option>
-                                      <option value="4">4</option>
-                                    </select>
-
-                                    <p>{{ activities.price }}</p>
-                                  </div>
+                    <!-- Search Option -->
+                        <div class="col-xs-12 col-md-12">
+                            <form action="{% url 'member:search' %}" class="form-search form-horizontal pull-right" id="custom-search-form">
+                                <div class="input-append span12">
+                                    <!-- <label for="search" class="sr-only">Search</label> -->
+                                    <input type="text" class="search-query" name="search" id="activity_autocomplete" placeholder="Search...." value="{{ request.GET.search }}"><span class="glyphicon glyphicon-search" style="right:25px;"></span>
                                 </div>
+                            </form>
+                        </div>
+                         <!-- end search form -->
+                        <div class="col-xs-12 col-md-12">
+                        <div class="heading-title text-center page-title	" id="accommodation-popular">
+                                <h2 class="text-uppercase" >Popular Activities</h2>
+                            </div>
+                        </div>
+                        <div>
+                        <form id="booking-list" action="{% url 'member:booking_activity' %}" method="post">
+                            {% csrf_token %}
+                            <div class="minus-margin-top-md margin-bottom-md">
+                            <!-- Check-in and Check-out -->
+                                <div class="form-group row no-margin">
+                                    <label for="check-in-time" class="col-sm-3 col-form-label label-xl">
+                                        Check In:
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class='input-group date' id='datetimepicker-check-in'>
+                                            <input id="check-in-time" type="text" class="form-control" value=""/>
+                                            <input id="checkin-time" type="hidden" name="checkin-date">
+                                            {% comment %}First field{% endcomment %}
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row no-margin">
+                                    <label for="check-out-time" class="col-sm-3 col-form-label label-xl">
+                                        Check Out:
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class='input-group date' id='datetimepicker-check-out'>
+                                            <input type="text" id="check-out-time" class="form-control" value=""/>
+                                            <input id="checkout-time" type="hidden" name="checkout-date">
+                                            {% comment %}Second field{% endcomment %}
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Check-in and check-out -->
+                            </div>
+
+                            <div class="card-row">
+
+
+                                {% for activities in activity %}
+                                    <div class="card-row card-border">
+                                        <div class="card-row-inner">
+                                        {% if activities.image %}
+                                            <div class="card-row-image"
+                                                 data-background-image="{{ activities.image.url }}"
+                                                 style="background-image: url({{ accommo.image.url }});">
+                                                <div class="card-row-label"><strong><a href="">{{ activities.name }}</a></strong></div>
+                                                <!-- /.card-row-label -->
+
+                                                <div class="card-row-price">${{ activities.price }} / pax</div><!-- -->
+
+                                            </div><!-- /.card-row-image -->
+                                        {% else %}
+                                            <div class="card-row-image"
+                                                 data-background-image="{% static 'img/defult.png' %}">
+                                                <div class="card-row-label"><a href="">{{ activities.name }}</a></div>
+                                                <!-- /.card-row-label -->
+
+                                                <div class="card-row-price">${{ activities.price }} / pax</div><!-- -->
+
+                                            </div><!-- /.card-row-image -->
+                                            {% endif %}
+                                            <div class="card-row-body">
+                                                <h2 class="card-row-title"><a href="">{{ activities.name }}</a></h2>
+                                                <div class="card-row-content">
+                                                    <p>{{ activities.get_short_detail }}........</p></div>
+                                                <!-- /.card-row-content -->
+                                            </div><!-- /.card-row-body -->
+
+                                            <div class="card-row-properties">
+                                                <dl>
+
+                                                    <dd>Price</dd>
+                                                    <dt>${{ activities.price }} / pax</dt>
+
+                                                    <dd>Category</dd>
+                                                    <dt>{{ activities.type }}</dt>
+
+                                                    <dd>Availability</dd>
+                                                    <dt class="availability" data-id = "{{ activities.aid|safe }}" data-name="{{ activities.name }}"
+                                                        style="color: #F27A4E">2 pax(s)
+                                                    </dt>
+
+                                                    <dd>Quantity</dd>
+                                                    <dt>
+                                                        <label for="{{ activities.name }}"></label>
+                                                        <select name="{{ activities.name }}" data-amount = "{{ activities.amount }}" id="{{ activities.aid|safe }}">
+
+                                                            {% comment %}{% for activity in activities.get_room_amount %}
+                                                                <option value="{{ activity }}">{{ activity }} pax(s)</option>
+                                                            {% endfor %}{% endcomment %}
+
+                                                        </select>
+                                                        {% comment %}Third field{% endcomment %}
+                                                    </dt>
+                                                </dl>
+                                            </div><!-- /.card-row-properties -->
+                                        </div><!-- /.card-row-inner -->
+                                    </div>
                                 {% endfor %}
-                              </div>
                             </div>
 
-                            <div class="col-6 col-md-2 sidebar-offcanvas">
-                              <div class="">
-                                <button type="submit" name="btn-book" class="btn btn-primary" id="btn-book" disabled="disabled" style="position: absolute, top:50%;">BOOK NOW</button>
-                              </div>
-                            </div>
-	                         </div>
-                         </div>
-
-
-                       </div>
-                     </div>
-                   </section>
-        {# body content end #}
+                            <input type="hidden" name="list-booking" id="list-activity">
+                            <input type="submit" id="booking-btn" class="btn btn-book btn-float" value="Book now"/>
+                        </form>
+                        </div>
+                    </div>
+                    {# end small header #}
+                </div>
+            </div>
+        </div>
+    </div>
+    {# body content end #}
 {% endblock %}
 
 {% block footer %}
     {% include 'include/footer.html' %}
 {% endblock %}
 
+{% block ajax_script %}
+    <script type="text/javascript" src="{% static 'js/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script type="text/javascript">
+        var infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+            onBeforePageLoad: function () {
+                $('.loading').show();
+        },
+        onAfterPageLoad: function ($items) {
+            $('.loading').hide();
+            }
+        });
+
+        $(function() {
+            $("#activity_autocomplete").autocomplete({
+                source: "{% url 'member:activity_autocomplete' %}",
+                minLength: 1,
+            });
+        });
+
+        $(window).ready(function () {
+            csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+
+            //  Date Picker Implementation
+            var today = moment().add(1, 'days').format('L');
+            var a = moment().add(1, 'days').format('MM-DD-YYYY');
+            var tomorrow = moment().add(2, 'days').format('L');
+            console.log(today);
+            console.log(a);
+
+            $('#datetimepicker-check-in').datetimepicker({
+                minDate: today,
+                defaultDate: today,
+                format: 'L',
+                showClear: true,
+                widgetPositioning: {
+                    horizontal: 'auto',
+                    vertical: 'bottom'
+                }
+            });
+
+            $('#datetimepicker-check-out').datetimepicker({
+                minDate: tomorrow,
+                defaultDate: tomorrow,
+                format: 'L',
+                showClear: true,
+                widgetPositioning: {
+                    horizontal: 'auto',
+                    vertical: 'bottom'
+                }
+            });
+
+            $('#datetimepicker-check-in').on("dp.change", function (e) {
+                var next_day = moment(e.date).add(1, 'days');
+                $('#datetimepicker-check-out').data("DateTimePicker").minDate(next_day);
+                $('#datetimepicker-check-out').data("DateTimePicker").defaultDate(next_day);
+                //console.log(e.date);
+                date_checkin = moment(e.date).format('L');
+                date_checkout = moment(e.date).add(1, 'days').format('L');
+                console.log(date_checkin);
+                console.log(date_checkout);
+                //console.log(typeof(date_checkin));
+                a = moment(e.date).format('MM-DD-YYYY');
+                $('#checkin-time').val(date_checkin);
+                $('#checkout-time').val(date_checkout);
+
+                check_availability();
+            });
+
+            $('#datetimepicker-check-out').on("dp.change", function (e) {
+                //$('#datetimepicker-check-in').data("DateTimePicker").maxDate(e.date);
+                $('#checkout-time').val(moment(e.date).format('L'));
+                console.log(moment(e.date).format('L'));
+            });
+
+            //  Availability Implementation without changing Checkin Date with auto run function
+            var check_availability = (function availability() {
+                $("select").each(function () {
+                    $(this).find('option').remove();
+                });
+                $(".availability").each(function (index) {
+                    var name = $(this).attr('data-name');
+                    var iD = $(this).attr('data-id');
+                    var txt = $(this);
+
+                    //console.log( index + ": " + $( this ).attr('data-name') );
+                    //console.log($("input[name=csrfmiddlewaretoken]").val());
+
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/activity/' + name + '/' + a + '/',
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        data: {
+                            'datein': today
+                        },
+                        headers: {
+                            'X-CSRFToken': csrfmiddlewaretoken
+                        },
+                        success: function (e) {
+                            // Role Back Success
+                            receive_data = e;
+                            console.log(receive_data);
+                            txt.text(receive_data + ' pax(s)');
+                            for (i = 0; i<= parseInt(receive_data); i++){
+                                var suffix = '';
+                                if (i>1){
+                                    suffix = ' pax';
+                                    console.log(i);
+                                }else {
+                                    suffix = ' pax';
+                                }
+                                $('select[id='+ iD +']').append($("<option></option>").attr('value', i).text(i + suffix));
+                            }
+                            if (parseInt(receive_data) === 0) {
+                                console.log(iD);
+                                $('select[id='+ iD +']').attr("disabled", "disabled");
+                            }else {
+                                $('select[id='+ iD +']').attr('disabled', false);
+                                console.log('********' +iD);
+                            }
+                        }
+                    });
+
+                });
+                return availability;
+            }());
+
+            console.log(check_availability);
+
+            // Pagination without refreshing page
+
+            // Booking Btn Implementation
+            var activity_amount = 0;
+            var activity_test = [];
+            var update_item_index = 0;
+            var update_status = false;
+
+            $('select').on("change", function () {
+                var item = {
+                    "name": $(this).attr('name'),
+                    "value": $(this).val()
+                };
+                activity_amount = activity_amount + $('select').val();
+                console.log("on change proceed.");
+                if (activity_test.length === 0) {
+                    activity_test.push(item);
+                    console.log(activity_test);
+                } else {
+                    var i = activity_test.length;
+                    console.log("***************************");
+                    while (i) {
+                        var b = i - 1;
+                        i = b;
+                        if (b >= 0) {
+                            if (activity_test[b].name === $(this).attr('name')) {
+                                update_item_index = b;
+                                update_status = true;
+                                console.log(update_item_index);
+                                console.log("checked exist item");
+                            }
+                        }
+                    }
+                    //console.log(typeof(update_item_index));
+                    //console.log(update_item_index);
+                    if (update_status) {
+                        if (parseInt($(this).val()) === 0) {
+                            activity_test.splice(update_item_index, 1)
+                        } else {
+                            activity_test[update_item_index].value = $(this).val();
+                        }
+                        update_status = false;
+                    } else {
+                        activity_test.push(item);
+                    }
+                    console.log(activity_test);
+                    console.log("****************************");
+                }
+                console.log(typeof(JSON.stringify(activity_test)));
+                console.log(JSON.stringify(activity_test));
+                $("#list-activity").val(JSON.stringify(activity_test));
+                //console.log($("#list-activity").val());
+                console.log("****************************");
+                //show button
+                if (activity_test.length > 0) {
+                    $("#booking-btn").fadeIn(200);
+                } else {
+                    $("#booking-btn").fadeOut(200);
+                }
+            });
+
+            {% comment %}
+            $("#booking-list").on('submit', function () {
+               var test_booking = $(this).serialize();
+               alert(test_booking);
+            });
+            {% endcomment %}
+        });
+
+        /*(function($){
+            $.fn.donetyping = function(callback){
+                var _this = $(this);
+                var x_timer;
+                _this.keyup(function(){
+                    clearTimeout(x_timer);
+                    x_timer = setTimeout(clear_timer,1000);
+                });
+                function clear_timer(){
+                    clearTimeout(x_timer);
+                    callback.call(_this);
+                }
+            }
+        })(jQuery);
+        $('#search').donetyping(function(callback){
+
+        });*/
+        /*$("#search").keyup(function(){
+            $(".card-row").each(function(){
+                $(this).show();
+            });
+            var searchValue = $("#search").val().toLowerCase();
+            if(searchValue!=null&&searchValue!=""){
+                $(".card-row").each(function(){
+                var name = $(this).attr('name');
+                name = name.toLowerCase();
+                var check = title.search(searchValue);
+                if(check==-1){
+                    $(this).hide();
+                }
+              });
+            }
+            else{
+                $(".card-row").each(function(){
+
+                $(this).show();
+
+             });
+            }
+        });*/
+    </script>
+{% endblock %}
+
 {% block slide_script %}
     <!-- SLIDER REVOLUTION INIT  -->
-<script src="{% static 'js/moment.min.js' %}"></script>
-<script src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script>
-<script src="{% static 'js/jquery.datetimepicker.full.js' %}"></script>
+    <script type="text/javascript">
 
+        jQuery(document).ready(function () {
 
+            jQuery('.tp-banner').show().revolution(
+                {
+                    dottedOverlay: "none",
+                    delay: 8000,
+                    // startwidth:1170,
+                    startheight: 600,
+                    hideThumbs: 200,
 
-<script>
-  $(document).ready('.date').each(function(){
-    this = $(this);
-    var test = this.attr('st');
-    test.datetimepicker();
+                    thumbWidth: 100,
+                    thumbHeight: 50,
+                    thumbAmount: 5,
 
-  });
-</script>
-<script>
-  function validate(){
-    var valid = true;
-    valid = checkData($(#the_optoin));
+                    navigationType: "bullet",
+                    navigationArrows: "solo",
+                    navigationStyle: "preview4",
 
-    $("#btn-bok").attr("disabled", true);
-    if(valid){
-      $("#btn-book").attr("disabled",false);
-    }
-  }
-  function checkData(obj){
-    var amt = $(obj).attr("the_optoin");
-    $("."+amt+"-validation").html("");
-    $(obj).css("border", "");
-    if($(obj).val() == ""){
-        $(obj).css("border", "#FF0000 1px solid");
-        $("."+amt+"-validation").html("Required");
-        return false;
-    }
-    return true;
-  }
-</script>
+                    touchenabled: "on",
+                    onHoverStop: "on",
+
+                    swipe_velocity: 0.7,
+                    swipe_min_touches: 1,
+                    swipe_max_touches: 1,
+                    drag_block_vertical: false,
+
+                    parallax: "mouse",
+                    parallaxBgFreeze: "on",
+                    parallaxLevels: [7, 4, 3, 2, 5, 4, 3, 2, 1, 0],
+
+                    keyboardNavigation: "off",
+
+                    navigationHAlign: "center",
+                    navigationVAlign: "bottom",
+                    navigationHOffset: 0,
+                    navigationVOffset: 20,
+
+                    soloArrowLeftHalign: "left",
+                    soloArrowLeftValign: "center",
+                    soloArrowLeftHOffset: 20,
+                    soloArrowLeftVOffset: 0,
+
+                    soloArrowRightHalign: "right",
+                    soloArrowRightValign: "center",
+                    soloArrowRightHOffset: 20,
+                    soloArrowRightVOffset: 0,
+
+                    shadow: 0,
+                    fullWidth: "on",
+                    // autoHeight:"on",
+                    fullScreen: "off",
+
+                    spinner: "spinner4",
+
+                    stopLoop: "off",
+                    stopAfterLoops: -1,
+                    stopAtSlide: -1,
+
+                    shuffle: "off",
+
+                    autoHeight: "off",
+                    forceFullWidth: "off",
+
+                    hideThumbsOnMobile: "off",
+                    hideNavDelayOnMobile: 1500,
+                    hideBulletsOnMobile: "off",
+                    hideArrowsOnMobile: "off",
+                    hideThumbsUnderResolution: 0,
+
+                    hideSliderAtLimit: 0,
+                    hideCaptionAtLimit: 0,
+                    hideAllCaptionAtLilmit: 0,
+                    startWithSlide: 0,
+                    videoJsPath: "slider-revolution/videojs/",
+                    fullScreenOffsetContainer: ""
+                });
+
+        }); //ready
+    </script>
 {% endblock %}

@@ -1,3 +1,4 @@
+requests
 astroid==1.5.3
 backports.functools-lru-cache==1.4
 cairocffi==0.8.0

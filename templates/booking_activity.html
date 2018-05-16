@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>Booking</title>
+{% endblock %}
+
+{% block ajax_style %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datetimepicker.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% include 'include/navbar.html' %}
+
+    <!--page title start-->
+    <section class="page-title page-title-center">
+        <div class="container">
+            <h2 class="text-uppercase">Booking</h2>
+        </div>
+    </section>
+    <!--page title end-->
+
+    {% comment %}Start content{% endcomment %}
+    <div class="page-wrapper">
+        <div class="main">
+            <div class="main-inner inner-small">
+                <div class="container">
+                    <div class="f-logo-center">
+                        <a href="#" class="m-bot-20 footer-logo">
+                            <img src="{% static 'img/logo.png' %}" class="retina img-center" alt="">
+                        </a>
+                    </div>
+                    <div class="row col-md-11">
+                        <form action="{% url 'member:handle_booking' %}" method="post" id="booking_form" data-selected-activity="{{ selected_activity|length }}">
+                        {% csrf_token %}
+                            {% comment %}start check in and check out time{% endcomment %}
+                            <div class="row">
+                                <h2 class="bold_brown_text">vKirirom Pine Resort</h2>
+                                <div class="booking checkin">
+                                    <div class="form-group row no-margin">
+                                        <label for="check-in-time" class="col-md-3 col-sm-4 col-form-label float-left">
+                                            <h3 class="no-margin">Check In: </h3>
+                                        </label>
+                                        <div class="col-md-6 col-sm-8 float-left">
+                                            <input type="hidden" name="checkin_date" value="{{ checkin|date:'b. d, Y'}}">
+                                            <p id="checkin_date">{{ checkin|date:"l, d F, Y" }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row no-margin ">
+                                        <label for="check-out-time" class="col-md-3 col-sm-4 col-form-label float-left">
+                                            <h3 class="no-margin">Check Out: </h3>
+                                        </label>
+                                        <div class="col-md-6 col-sm-8 float-left no-margin">
+                                            <input type="hidden" name="checkout_date" value="{{ checkout|date:'b. d, Y' }}">
+                                            <p id="checkout_date">{{ checkout|date:"l, d F, Y" }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% comment %}end check in and check out time{% endcomment %}
+                            {% comment %}start booking information{% endcomment %}
+                            <div class="row" id="activity_information">
+                                <h2 class="bold_brown_text">Activity Booking</h2>
+                                {% for activity in selected_activity %}
+                                    <div id="{{ activity.activity_id }}" class="booking checkout"
+                                         data-activity-amount="{{ activity.amount|safe }}"
+                                         data-activity-capacity="{{ activity.activity.quantity|safe }}" data-night="{{ pax_num }}">
+                                        <div class="row outer-small">
+                                            <h2 id="name_{{ activity.activity_id|safe }}" class="item-name pull-left">{{ activity.activity|safe }}</h2>
+                                            <div class="pull-right">
+                                                <h4 id="price_{{ activity.activity_id|safe }}">{{ activity.total_price|safe }} $</h4><br>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!--<div class="col-sm-3">
+                                                <p class="no-margin">Flexible Cancellation</p>
+                                                <p class="no-margin">Breakfast Included</p>
+                                            </div>-->
+                                            <div id="p_selection_{{ activity.activity_id }}">
+                                                <div class="col-sm-3">
+                                                    <label for="person" class="bold_brown_text">Number of Player</label>
+                                                    <select class="form-control" name="person"
+                                                            id="selection_{{ activity.activity_id }}">
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3 booking-policy">
+                                                Booking Policies
+                                                <span class="help-tip">
+                                                    <div class="tip-content">
+                                                        <p class="no-margin"><span class="bold">Cancellation:  </span>If cancelled, modified or in case of no-show, the first night will be charged.</p>
+                                                        <p class="no-margin"><span class="bold">Payment:  </span>No deposit will be charged. Balance due on arrival.</p>
+                                                        <!--<p class="no-margin"><span class="bold">Meal included</span> Breakfast included</p>-->
+                                                        <p class="no-margin"><span class="bold">Other Policies</span> Pets allowed. Your credit card is required to secure the bookings only. Payment is made upon check out at the hotel. Smoking area available.</p>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                            <div style="margin-top: 10px" class="col-sm-12">
+                                                <p id="detail_{{ activity.activity_id }}" class="no-margin">
+                                                    <span
+                                                            style="font-weight: bold">Details: </span> {{ activity.amount|safe }}
+                                                    activity, {{ pax_num }} pax,
+                                                    <span id="detail_data_{{ activity.activity_id }}">0 adults</span> inluded in
+                                                    price
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <input type="hidden" name="activity_data" value="">
+                                <input type="hidden" name="detail_data" value="">
+                                {% comment %}End booking information{% endcomment %}
+                            </div>
+                            {% comment %}End Booking information{% endcomment %}
+                            {% comment %}Total Booking Price{% endcomment %}
+                            <div class="row">
+                                <h2>Price Detail</h2>
+                                <div class="booking total-price">
+                                    <div class="row padding">
+                                        <p class="pull-left no-margin">Activity Charge</p>
+                                        <p class="pull-right no-margin">US$  <span id="totally_price" style="font-weight: bold">{{ totally_price|safe }}</span></p>
+                                    </div>
+                                    <div class="row padding">
+                                        <p class="pull-left no-margin">Tax</p>
+                                        <p class="pull-right no-margin">US$  <span id="tax_price"></span></p>
+                                    </div>
+                                    <hr>
+                                    <div class="row padding">
+                                        <p class="pull-left no-margin">Total: </p>
+                                        <p class="pull-right no-margin">US$  <span id="b_price" style="font-weight: bold"></span></p>
+                                        <input type="hidden" name="b_price" value="">
+                                    </div>
+                                    <div class="row padding">
+                                        <span class="pull-right no-margin">Price include 10% Tax.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% comment %}End Total Booking Price{% endcomment %}
+                            {% comment %}Check Policy{% endcomment %}
+                            <div class="row">
+                                <div class="booking checkout">
+                                    <div class="form-group no-margin">
+                                        <input id="checkbox-policy" name="checkbox-policy" type="checkbox"
+                                               value="remember-me" checked="checked">
+                                        <label class="no-margin" for="checkbox-policy">I have read and accepted the
+                                            Booking Policies.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% comment %}End check policy.{% endcomment %}
+                            {% comment %}Book BTN{% endcomment %}
+                            <div class="row">
+                                <input id="btn_book" type="submit" href="#" class="btn btn-primary btn-xs pull-right margin-bottom"
+                                       value="Book">
+                            </div>
+                            {% comment %}End Book btn{% endcomment %}
+
+                            {% comment %}Booking Policy{% endcomment %}
+                            <div class="row">
+                                <div class="booking checkin">
+                                    <h3 class="no-margin">Activity's Name</h3>
+                                    <p class="no-margin"><span class="bold">Cancellation: </span>If cancelled, modified
+                                        or in case of no-show, the first night will be charged.</p>
+                                    <p class="no-margin"><span class="bold">Payment:  </span>No deposit will be charged.
+                                        Balance due on arrival.</p>
+                                    <p class="no-margin"><span class="bold">Meal included:  </span>Breakfast included
+                                    </p>
+                                    <p class="no-margin"><span class="bold">Other policies:  </span>Pets allowed. Your
+                                        credit card is required to secure the bookings only. Payment is made upon check
+                                        out at the hotel.
+                                        Smoking area available. </p>
+                                </div>
+                            </div>
+                            {% comment %}End Booking Policy{% endcomment %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% comment %}End content{% endcomment %}
+
+{% endblock %}
+
+{% block footer %}
+    {% include 'include/footer.html' %}
+{% endblock %}
+
+{% block ajax_script %}
+    <script>
+        $(window).ready(function () {
+            var i = 1;
+            var j = 1;
+            var data_detail = [];
+            var activity_data = [];
+            var data_selected_activity = parseInt($("#booking_form").attr('data-selected-activity'));
+            console.log(data_selected_activity);
+            var price = 0;
+            var person_selection_dom = "<div class=\"col-sm-3\">\n" +
+                "                                                    <label for=\"person\" class=\"bold_brown_text\">Number of Guest of activity " + j + "</label>\n" +
+                "                                                    <select class=\"form-control\" name=\"person\" id=\"person\">\n" +
+                "                                                        <option value=\"1\">1 Child, 1 adults</option>\n" +
+                "                                                        <option value=\"2\">2 adults</option>\n" +
+                "                                                        <option value=\"3\">3 adults</option>\n" +
+                "                                                        <option value=\"4\">4 adults</option>\n" +
+                "                                                        <option value=\"5\">5 adults</option>\n" +
+                "                                                    </select>\n" +
+                "                                                </div>";
+            console.log(person_selection_dom);
+
+
+            while (data_selected_activity) {
+                // Create id value
+                var activity_id = "activity" + i;
+                var activity_id_var = $("#" + activity_id);
+                var activity_price;
+                // Create detail variable and detail data
+
+                // variable for append select person
+                var activity_select_person = "p_selection_" + activity_id;
+                var activity_select_person_var = $("#" + activity_select_person);
+                console.log(typeof(activity_select_person_var));
+                console.log(activity_select_person_var);
+
+                // add item to activity data
+                // get name:
+                console.log("#name_"+activity_id);
+                activity_item = {
+                    "name": $("#name_" + activity_id).text(),
+                    'amount': activity_id_var.attr("data-activity-amount")
+                };
+                console.log(activity_item);
+                activity_data.push(activity_item);
+                console.log(activity_data);
+
+                // test append person selection in each activity
+                var activity_amount = activity_id_var.attr("data-activity-amount");
+                console.log("##########");
+                console.log(activity_amount);
+                console.log("##########");
+                {% comment %}for (j = 1; j <= activity_amount; j++) {
+                    console.log(j);
+                    activity_select_person_var.append("<div class=\"col-sm-3\">\n" +
+                "                                                    <label for=\"" + activity_id + "_" + j + "\" class=\"bold_brown_text\">Number of Guest of activity "+ j +"</label>\n" +
+                "                                                    <select class=\"form-control\" name=\"" + activity_id + "_" + j +"\" id=\"" + activity_id + "_" + j + "\">\n" +
+                "                                                    </select>\n" +
+                "                                                </div>");
+                }{% endcomment %}
+
+                // start append option select data
+                // get activity_quantity data
+                var activity_capacity = parseInt(activity_id_var.attr("data-activity-capacity"));
+                console.log("this is activity capacity: ");
+                console.log(activity_capacity);
+
+                // initialize activity data with data detail
+                var data_element = $("#detail_data_" + activity_id);
+                console.log(data_element);
+                data_element.text(" " + activity_amount * activity_capacity + "  adults");
+                activity_data_item = {
+                    "data-adult": activity_amount*activity_capacity,
+                    "data-child": 0
+                };
+                console.log(activity_data_item);
+                data_detail.push(activity_data_item);
+                $("input[name=detail_data]").val(JSON.stringify(data_detail));
+                console.log(JSON.stringify(data_detail));
+                console.log(data_element.text());
+
+                // select id for each activity
+                var selection_person_data = $("#selection_" + activity_id); // activity1_1 activity1_2 .....
+                console.log(selection_person_data);
+                var person_quantity = activity_capacity * parseInt(activity_amount);
+                console.log(person_quantity);
+                for (h = person_quantity; h >= 1; h--) {  // adult
+                    for (f = 0; f < person_quantity; f++) { //child
+                        if (parseInt(h + f) > person_quantity) {
+                            continue;
+                        }
+                        if (f === 0) {
+                            if (h > 1) {
+                                selection_person_data.append("<option data-adult=\"" + h + "\" data-child=\"" + f + "\" value=\"\">" + h + " adults" + "</option>");
+                            } else {
+                                selection_person_data.append("<option data-adult=\"" + h + "\" data-child=\"" + f + "\" value=\"\">" + h + " adult" + "</option>");
+                            }
+                        } else {
+                            child_suffix = "";
+                            adult_suffix = "";
+                            if (h > 1) {
+                                adult_suffix = " adults";
+                            } else {
+                                adult_suffix = " adult";
+                            }
+                            if (f > 1) {
+                                child_suffix = " children";
+                            } else {
+                                child_suffix = " child";
+                            }
+                            selection_person_data.append("<option data-adult=\"" + h + "\" data-child=\"" + f + "\" value=\"\">" + h + adult_suffix + " , " + f + child_suffix + "</option>");
+                        }
+                    }
+                }
+                // end append select data
+
+                data_selected_activity--;
+                i++;
+            }
+
+
+            // add checkin and checkout date
+            console.log($("#checkin_date").text());
+            console.log($("#checkout_date").text());
+
+            $('select').on('change', function () {
+                var selection_id = $(this).attr("id");
+                var get_ident = selection_id.slice(-1);
+                console.log(selection_id);
+                console.log(get_ident);
+                var data_child = parseInt($('option:selected', this).attr("data-child"));
+                var data_adult = parseInt($('option:selected', this).attr("data-adult"));
+                console.log($('option:selected', this).attr("data-adult"));
+                console.log($('option:selected', this).attr("data-child"));
+                console.log("select has changed something");
+                child_suffix = "";
+                adult_suffix = "";
+                if (data_adult > 1) {
+                    adult_suffix = " adults ";
+                } else {
+                    adult_suffix = " adult ";
+                }
+                if (data_child > 1) {
+                    child_suffix = " children";
+                } else {
+                    child_suffix = " child";
+                }
+
+                var detail_data = "";
+                if (data_child === 0){
+                    detail_data = data_adult + adult_suffix;
+                }else {
+                    detail_data = data_adult + adult_suffix + data_child + child_suffix;
+                }
+
+                // update data_detail
+                data_detail[parseInt(get_ident) - 1]['data-child'] = data_child;
+                data_detail[parseInt(get_ident) - 1]['data-adult'] = data_adult;
+
+                console.log(detail_data);
+                console.log("all GG");
+                console.log(parseInt(get_ident) - 1);
+                console.log(data_detail[parseInt(get_ident) - 1]['data-adult']);
+                console.log(data_detail[parseInt(get_ident) - 1]['data-child']);
+                $("#detail_data_activity"+ get_ident).text(detail_data);
+                $("input[name=detail_data]").val(JSON.stringify(data_detail));
+                console.log($("input[name=detail_data]").val());
+            });
+
+            // Calculate total price
+            totally_price = $("#totally_price").text();
+            console.log(totally_price);
+            console.log();
+            tax_price = parseFloat(totally_price * 0.10);
+            b_price = parseFloat(totally_price) + tax_price;
+            console.log(b_price);
+            $("#b_price").text(b_price);
+            $("input[name=b_price]").val(b_price);
+            $("#tax_price").text(tax_price);
+
+            // add activity data
+            $("input[name=activity_data]").val(JSON.stringify(activity_data));
+            console.log($("input[name=activity_data]").val());
+
+            // check box policy
+            $("#checkbox-policy").on('change', function () {
+               if($(this).prop('checked')){
+                   $("#btn_book").prop('disabled', false);
+               }else {
+                   $("#btn_book").prop('disabled', true);
+               }
+            });
+        });
+    </script>
+{% endblock %}
