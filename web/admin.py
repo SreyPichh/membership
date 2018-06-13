@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from .models import User, MemberType, Accommodation, Activity, UserPoint, BookingInfo
+from .models import User, MemberType, Accommodation, Activity, UserPoint, BookingInfo, BookingActivity
 # Register your models here.
 
 
@@ -22,3 +22,4 @@ admin.site.register(Accommodation, AccommodationAdmin)
 admin.site.register(Activity)
 admin.site.register(UserPoint, UserPointAdmin)
 admin.site.register(BookingInfo)
+admin.site.register(BookingActivity)

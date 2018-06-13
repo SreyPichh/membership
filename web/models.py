@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import string, json
+import json
+import string
 import uuid as uuid
-from django.conf import settings
-
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from django.db import models
-
-# Create your models here.
-
 from datetime import datetime
 
+from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.db import models
 from django.utils.crypto import random
+import logging
+logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
+                    datefmt='%d-%m-%Y:%H:%M:%S',
+                    level=logging.DEBUG)
+# Create your models here.
 
 today = datetime.today()
-
-import logging
 
 VALIDATION_TYPES = (
     ('IDC', 'Identity Card'),
@@ -33,6 +33,7 @@ ROOM_TYPES = (
     ('PIPE ROOM', 'Pipe Room'),
     ('CAMPING', 'Camping')
 )
+
 
 def random_string(length, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for x in range(length))
@@ -73,6 +74,7 @@ def handle_number_of_user_brown():
     n_brown = User.object.filter(member_type=brown).count()
     return n_brown
 
+
 # Handle Reservation number generator
 def handle_reservation_number():
     """
@@ -82,7 +84,7 @@ def handle_reservation_number():
     """
 
     current_year = str(datetime.now().year)
-    if(len(BookingInfo.objects.all()) > 0):
+    if (len(BookingInfo.objects.all()) > 0):
         all_record = BookingInfo.objects.all()
         last_item = all_record[len(all_record) - 1]
         last_reservation_no = last_item.reservation_no
@@ -90,7 +92,26 @@ def handle_reservation_number():
         last_reservation_year = last_reservation_no[1:5]
         new_number = int(last_number) + 1
         if last_reservation_year == current_year:
-            new_reservation = 'R'+ last_reservation_year + '{0:05}'.format(new_number)
+            new_reservation = 'R' + last_reservation_year + '{0:05}'.format(new_number)
+        else:
+            new_reservation = 'R' + current_year + '{0:05}'.format(1)
+        return new_reservation
+    else:
+        new_reservation = 'R' + current_year + '{0:05}'.format(1)
+        return new_reservation
+
+
+def handle_reservation_number_activity():
+    current_year = str(datetime.now().year)
+    if (len(BookingActivity.objects.all()) > 0):
+        all_record = BookingActivity.objects.all()
+        last_item = all_record[len(all_record) - 1]
+        last_reservation_no = last_item.reservation_no
+        last_number = last_reservation_no[5:]
+        last_reservation_year = last_reservation_no[1:5]
+        new_number = int(last_number) + 1
+        if last_reservation_year == current_year:
+            new_reservation = 'R' + last_reservation_year + '{0:05}'.format(new_number)
         else:
             new_reservation = 'R' + current_year + '{0:05}'.format(1)
         return new_reservation
@@ -233,7 +254,7 @@ class Accommodation(models.Model):
     status = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
-    
+
     def __str__(self):
         return self.name
 
@@ -251,7 +272,7 @@ class Accommodation(models.Model):
         return detail
 
     def get_room_amount(self):
-        amount = range(0, self.amount+1)
+        amount = range(0, self.amount + 1)
         return amount
 
 
@@ -280,6 +301,48 @@ class Activity(models.Model):
     def get_short_detail(self):
         detail = self.detail[:250]
         return detail
+
+
+class BookingActivity(models.Model):
+    BOOKING_STATUS = (
+        (1, 'Confirm'),
+        (2, 'Operated'),
+        (3, 'Cancelled'),
+        (4, 'Completed')
+    )
+
+    bid = models.UUIDField(default=uuid.uuid4, editable=False)
+    reservation_no = models.CharField(default=handle_reservation_number_activity, max_length=15)
+    checkin_date = models.CharField(max_length=100)
+    checkout_date = models.CharField(max_length=100)
+    detail_data = models.CharField(max_length=100)
+    act_data = models.CharField(max_length=100)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    b_price = models.FloatField()
+    status = models.IntegerField(default=1, choices=BOOKING_STATUS)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    def __str__(self):
+        return self.reservation_no
+
+    def __unicode__(self):
+        return self.reservation_no
+
+    def get_activity_data(self):
+        data = []
+        detail_data = json.loads(self.detail_data)
+        act_data = json.loads(self.act_data)
+        for i in range(0, len(act_data)):
+            name = act_data[i]['name']
+            act = Activity.objects.get(name=name)
+            data.append({'act': act})
+
+            # amount
+            amount = act_data[i]['amount']
+            data[i]['amount'] = amount
+
+        return data
 
 
 class BookingInfo(models.Model):
@@ -352,18 +415,15 @@ class BookingInfo(models.Model):
 
             # add price
             nor_price = room.price
-            num_night = int((datetime.strptime(self.checkout_date, "%b. %d, %Y") - datetime.strptime(self.checkin_date, "%b. %d, %Y")).days)
+            num_night = int((datetime.strptime(self.checkout_date, "%b. %d, %Y") - datetime.strptime(self.checkin_date,
+                                                                                                     "%b. %d, %Y")).days)
             price = int(nor_price) * num_night * int(amount)
             data[i]['price'] = price
 
             # add index
-            data[i]['index'] = i+1
-
+            data[i]['index'] = i + 1
+        logging.debug(data)
         return data
-
-    def getRoom_Availability(self, name, date):
-
-        return
 
 
 class b_room(models.Model):

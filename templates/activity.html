@@ -22,7 +22,7 @@
                     <div class="row">
                     <!-- Search Option -->
                         <div class="col-xs-12 col-md-12">
-                            <form action="{% url 'member:search' %}" class="form-search form-horizontal pull-right" id="custom-search-form">
+                            <form action="{% url 'member:search_activity' %}" class="form-search form-horizontal pull-right" id="custom-search-form">
                                 <div class="input-append span12">
                                     <!-- <label for="search" class="sr-only">Search</label> -->
                                     <input type="text" class="search-query" name="search" id="activity_autocomplete" placeholder="Search...." value="{{ request.GET.search }}"><span class="glyphicon glyphicon-search" style="right:25px;"></span>

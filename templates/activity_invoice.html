@@ -63,7 +63,7 @@
                                 {% if invoices %}
                                     {% for invoice in invoices %}
                                         <div class="background-white box-shadow p20 mb30">
-                                            <a id="{{ invoice.bid }}" class="btn_download" href="{% url 'member:invoice_download' invoice.bid %}"><i class="fa fa-arrow-circle-o-down"></i></a>
+                                            <a id="{{ invoice.bid }}" class="btn_download" href="{% url 'member:activity_invoice_download' invoice.bid %}"><i class="fa fa-arrow-circle-o-down"></i></a>
                                             {% include 'invoice_card_activity.html' %}
                                             <div class="row">
                                                 <button data-invoice="{{ invoice.reservation_no }}" name="btn_cancel" class="btn btn-book pull-right" data-toggle="modal" data-target="#{{ invoice.reservation_no }}">Cancel
@@ -122,7 +122,7 @@
 
             $('button[name=btn_cancel]').on('click', function () {
                 name_item = $(this).attr('data-invoice');
-                $("a[name=" + name_item + "]").attr('href', "/cancel_booking/" + name_item);
+                $("a[name=" + name_item + "]").attr('href', "/cancel_booking_activity/" + name_item);
             });
 
         });

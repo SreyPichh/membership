@@ -29,14 +29,6 @@
                 <td>Expected-Date-Departure</td>
                 <td>{{ invoice.checkout_date|safe }} 12:25am</td>
             </tr>
-            <tr>
-                <td>Adults</td>
-                <td>{{ invoice.get_adult_data|safe }}</td>
-            </tr>
-            <tr>
-                <td>Children</td>
-                <td>{{ invoice.get_child_data|safe }}</td>
-            </tr>
             </tbody>
         </table>
         </div>
@@ -51,23 +43,20 @@
                 <th>#</th>
                 <th>Activity</th>
                 <th>Amount</th>
-                <th>Number of Guest</th>
                 <th>Price</th>
             </tr>
             </thead>
             <tbody>
-            {% for item in invoice.get_room_data %}
+                {% for item in invoice.get_activity_data %}
                 <tr>
                     <th scope="row">{{ item.index|safe }}</th>
-                    <td>{{ item.activity|safe }}</td>
+                    <td>{{ item.act|safe }}</td>
                     <td>{{ item.amount|safe }}</td>
-                    <td>{{ item.guest_num|safe }}</td>
                     <td data-name="r_price" data-price="{{ item.price|safe }}">$ {{ item.price|safe }}</td>
                 </tr>
             {% endfor %}
 
                 <tr>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td>Total Price</td>

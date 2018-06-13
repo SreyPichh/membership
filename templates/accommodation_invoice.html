@@ -65,6 +65,7 @@
                                         <div class="background-white box-shadow p20 mb30">
                                             <a id="{{ invoice.bid }}" class="btn_download" href="{% url 'member:invoice_download' invoice.bid %}"><i class="fa fa-arrow-circle-o-down"></i></a>
                                             {% include 'invoice_card.html' %}
+
                                             <div class="row">
                                                 <button data-invoice="{{ invoice.reservation_no }}" name="btn_cancel" class="btn btn-book pull-right" data-toggle="modal" data-target="#{{ invoice.reservation_no }}">Cancel
                                                 </button>
@@ -81,9 +82,9 @@
                                                 </div>
                                                 </div>
                                                 </div>
-                                                <div class="modal-body">...</div>
+                                                <div class="modal-body"></div>
                                                 <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button><a name="{{ invoice.reservation_no }}" href="" class="btn btn-primary">Yes</a>
+                                                <button type="button" class="btn btn-secondary"    data-dismiss="modal">No</button><a name="{{ invoice.reservation_no }}" href="" class="btn btn-primary">Yes</a>
                                                 </div>
                                                 </div>
                                                 </div>

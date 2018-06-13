@@ -31,7 +31,7 @@
                         </a>
                     </div>
                     <div class="row col-md-11">
-                        <form action="{% url 'member:handle_booking' %}" method="post" id="booking_form" data-selected-activity="{{ selected_activity|length }}">
+                        <form action="{% url 'member:handle_booking_activity' %}" method="post" id="booking_form" data-selected-activity="{{ selected_activity|length }}">
                         {% csrf_token %}
                             {% comment %}start check in and check out time{% endcomment %}
                             <div class="row">
@@ -81,7 +81,6 @@
                                                     <label for="person" class="bold_brown_text">Number of Player</label>
                                                     <select class="form-control" name="person"
                                                             id="selection_{{ activity.activity_id }}">
-
                                                     </select>
                                                 </div>
                                             </div>
@@ -108,7 +107,7 @@
                                         </div>
                                     </div>
                                 {% endfor %}
-                                <input type="hidden" name="activity_data" value="">
+                                <input type="hidden" name="act_data" value="">
                                 <input type="hidden" name="detail_data" value="">
                                 {% comment %}End booking information{% endcomment %}
                             </div>
@@ -193,7 +192,7 @@
             var i = 1;
             var j = 1;
             var data_detail = [];
-            var activity_data = [];
+            var act_data = [];
             var data_selected_activity = parseInt($("#booking_form").attr('data-selected-activity'));
             console.log(data_selected_activity);
             var price = 0;
@@ -231,8 +230,8 @@
                     'amount': activity_id_var.attr("data-activity-amount")
                 };
                 console.log(activity_item);
-                activity_data.push(activity_item);
-                console.log(activity_data);
+                act_data.push(activity_item);
+                console.log(act_data);
 
                 // test append person selection in each activity
                 var activity_amount = activity_id_var.attr("data-activity-amount");
@@ -258,12 +257,12 @@
                 var data_element = $("#detail_data_" + activity_id);
                 console.log(data_element);
                 data_element.text(" " + activity_amount * activity_capacity + "  adults");
-                activity_data_item = {
+                act_data_item = {
                     "data-adult": activity_amount*activity_capacity,
                     "data-child": 0
                 };
-                console.log(activity_data_item);
-                data_detail.push(activity_data_item);
+                console.log(act_data_item);
+                data_detail.push(act_data_item);
                 $("input[name=detail_data]").val(JSON.stringify(data_detail));
                 console.log(JSON.stringify(data_detail));
                 console.log(data_element.text());
@@ -368,8 +367,8 @@
             $("#tax_price").text(tax_price);
 
             // add activity data
-            $("input[name=activity_data]").val(JSON.stringify(activity_data));
-            console.log($("input[name=activity_data]").val());
+            $("input[name=act_data]").val(JSON.stringify(act_data));
+            console.log($("input[name=act_data]").val());
 
             // check box policy
             $("#checkbox-policy").on('change', function () {

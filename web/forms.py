@@ -1,9 +1,8 @@
 from django import forms
-from .models import User, VALIDATION_TYPES, BookingInfo, Accommodation
+from .models import User, VALIDATION_TYPES, BookingInfo, Accommodation, BookingActivity
 
 
 class RegisterForm(forms.ModelForm):
-
     name = forms.CharField(widget=forms.TextInput, label='name')
     email = forms.EmailField(widget=forms.EmailInput, label='email')
     phone = forms.IntegerField(widget=forms.NumberInput, label='phone')
@@ -39,13 +38,13 @@ class AuthenticationForm(forms.Form):
     class Meta:
         fields = ['email', 'password']
 
+
 class OdooMemberAuth(forms.Form):
     """docstring for OdooMemberAuth"""
     email = forms.EmailField(widget=forms.EmailInput, label="Username")
+
     class Meta:
         fields = ['email']
-
-        
 
 
 class EditProfileImage(forms.ModelForm):
@@ -62,8 +61,8 @@ class EmailForgotPassword(forms.Form):
     class Meta:
         fields = ['email']
 
-class ResetPassword(forms.Form):
 
+class ResetPassword(forms.Form):
     """
     A form that lets a user change set their password without entering the old password
     """
@@ -77,7 +76,6 @@ class ResetPassword(forms.Form):
 
     class Meta:
         fields = ['password', 'confirm']
-
 
     def clean_new_confirm(self):
         new_password = self.cleaned_data.get('password')
@@ -96,6 +94,7 @@ class BookingList(forms.Form):
     """
     Booking List in index page and accommodation.
     """
+
     class Meta:
         fields = ['checkin_date', 'checkout_date', 'list_booking']
 
@@ -104,12 +103,22 @@ class BookingRecord(forms.ModelForm):
     """
     Booking Information for each booking record.
     """
+
     class Meta:
         model = BookingInfo
         fields = ['checkin_date', 'checkout_date', 'detail_data', 'b_price', 'room_data']
+
+
+class BookingRecordActivity(forms.ModelForm):
+    class Meta:
+        model = BookingActivity
+        fields = ['checkin_date', 'checkout_date', 'detail_data', 'b_price', 'act_data']
+
+
 class AccForm(forms.ModelForm):
     """docstring for AccForm"""
+
     class Meta:
         model = Accommodation
-        fields = ['name', 'type', 'amount','price', 'quantity', 'detail', 'image']
+        fields = ['name', 'type', 'amount', 'price', 'quantity', 'detail', 'image']
         # image = forms.ImageField()

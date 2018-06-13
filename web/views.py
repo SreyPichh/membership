@@ -26,12 +26,10 @@ from django.views.decorators.csrf import csrf_protect
 from weasyprint import CSS, HTML
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-import xmlrpclib
-from django.views.generic.list import ListView
 
 from .forms import RegisterForm, AccForm, AuthenticationForm, EditProfileImage, EmailForgotPassword, ResetPassword, \
-    BookingList, BookingRecord, OdooMemberAuth
-from .models import User, MemberType, UserPoint, Accommodation, BookingInfo, Activity
+    BookingList, BookingRecord, BookingRecordActivity
+from .models import User, MemberType, UserPoint, Accommodation, BookingInfo, Activity, BookingActivity
 
 logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
                     datefmt='%d-%m-%Y:%H:%M:%S',
@@ -91,6 +89,7 @@ def index(request):
         # page = request.GET.get('page',1)
         # logging.debug(page)
         # paginator = Paginator(accommodation, 4)
+
         # try:
         #     per_page = paginator.page(page)
         # except PageNotAnInteger:
@@ -111,7 +110,7 @@ def search(request):
     else:
         query = request.GET.get("search")
         if query:
-            logging.debug(query)
+            # logging.debug(query)
             accommodation = Accommodation.objects.filter(name__icontains=query)
             logging.debug(accommodation)
             return render(request, 'accommodation.html', {'accommodation': accommodation})
@@ -347,68 +346,8 @@ def accommodation_delete(request, pk):
 
         return JsonResponse(data)
 
-    # @csrf_protect
 
-
-# def member_user_login(request):
-#     if request.user.is_authenticated:
-#         return redirect("/")
-#     else:
-#         if request.method == 'POST':
-#             logging.debug("The member login in post method")
-#             form = OdooMemberAuth(request.POST)
-#             logging.debug(form)
-#             if form.is_valid:
-#                 logging.debug(request.POST['email'])
-#                 sr = request.POST['email']
-#                 logging.debug(sr)
-#                 user = models.execute_kw(db, uid, password,'res.partner', 'search_read',
-#                     [[['email', '=', sr], ['customer', '=', True]]], {'fields': ['email'], 'limit': 1})
-#                 logging.debug(user)
-#                 logging.debug("-------------------------------")
-#                 if user:
-#                     logging.debug(user)
-#                     if user is not None:
-#                         if  user.is_active:
-#                             logging.debug("USER IS NOT NONE")
-#                             user_login(request, user)
-#                             logging.debug("I am here")
-#                             return redirect("/profile/", {'user':user})
-#                     else:
-#                         error_message = "Error Email Loggin!"
-#                         logging.debug("ERROR CANNOT LOGIN")
-#                         return render(request, 'login.html', {'error_message': error_message})
-
-
-# @csrf_protect
-# def normal_user_login(request):
-#     if request.user.is_authenticated():
-#         return redirect('/')
-#     else:
-#         if request.method == 'POST':
-#             logging.debug("THIS IS DATA ON POST METHOD")
-#             logging.debug(request.POST)
-#             data = request.POST
-#             form = AuthenticationForm(data)
-#             if form.is_valid:
-#                 logging.debug("Form is valid as a normal login")
-#                 user = authenticate(email=request.POST['email'], password=request.POST['password'])
-#                 logging.debug(user)
-#                 if user is not None:
-#                     if user.is_active:
-#                         logging.debug("User is active")
-#                         user_login(request, user)
-#                         logging.debug("I am here!!!")
-#             #normal_user = normal_user_or_member(request, 'normal', 'POST', data=data)
-#                         return redirect('/profile/', {'user':user})
-#                 else:
-#                     error_message = "your email or password is incorrect"
-#                     return render(request, 'login.html', {'error_message': error_message})
-#         else:
-#             logging.debug("Request use get method.")
-#             form = AuthenticationForm()
-#         return render(request, 'login.html', {'form':form})
-
+# LOGIN A USER TO A WEB
 def login(request):
     if request.user.is_authenticated():
         return redirect('/')
@@ -665,7 +604,6 @@ def booking(request):
     if request.method == 'POST':
         logging.debug(request.POST)
         form = BookingList(data=request.POST)
-        logging.debug("------------------------")
         logging.debug(type(form))
         if form.is_valid():
             logging.debug("form is valid.")
@@ -692,10 +630,6 @@ def booking(request):
                 # person_choice for each room
                 total_person_per_room = int(booking_list[i]['value']) * room.quantity
                 logging.debug(total_person_per_room)
-                # room_choice = ACM_Choice.get_person_choice(total_person_per_room)
-                # logging.debug(room_choice)
-                # selected_room[i]['room_choice'] = room_choice
-                # selected room amount
                 room_amount = int(booking_list[i]['value'])
                 logging.debug(room_amount)
                 selected_room[i]['amount'] = room_amount
@@ -744,7 +678,7 @@ def booking_activity(request):
     if request.method == 'POST':
         logging.debug(request.POST)
         form = BookingList(data=request.POST)
-        logging.debug("------------------------")
+        logging.debug(form)
         logging.debug(type(form))
         if form.is_valid():
             logging.debug("form is valid.")
@@ -809,7 +743,8 @@ def booking_activity(request):
             # user
             user = User.object.get(id=request.user.id)
             logging.debug(user)
-            booking_record = BookingRecord()
+            booking_record = BookingRecordActivity()
+            logging.debug(booking_record)
             return render(request, 'booking_activity.html',
                           {'selected_activity': selected_activity, 'checkin': checkin, 'checkout': checkout,
                            'user': user,
@@ -822,13 +757,43 @@ def booking_activity(request):
 
 
 @csrf_protect
+def handle_booking_activity(request):
+    if request.method == "POST":
+        logging.debug(request.POST)
+        form = BookingRecordActivity(data=request.POST)
+        logging.debug(form)
+        if form.is_valid():
+            logging.debug("Form is valid")
+            booking_activity = form.save(commit=True)
+            logging.debug(booking_activity)
+            logging.debug(booking_activity.checkin_date)
+            booking_activity.user = User.object.get(id=request.user.id)
+            logging.debug(booking_activity.user)
+            booking_activity.save()
+            logging.debug("I have save form")
+            subject = 'Booking accommodation'
+            message = 'Hello Administrator! I am sending this to alert you that user name %s has booked %s' % (
+            booking_activity.user, booking_activity.act_data)
+
+            from_email = settings.EMAIL_HOST_USER
+            receiver = ['phansreypich15@kit.edu.kh']
+            logging.debug("this is here and just here!")
+
+            send_mail(subject, message, from_email, receiver, fail_silently=True)
+            logging.debug("successfully send email!")
+            logging.debug(receiver)
+        else:
+            logging.debug("Form is Invalid")
+        return redirect("/invoice")
+
+
+@csrf_protect
 def handle_booking(request):
     if request.method == "POST":
         logging.debug(request.POST)
         form = BookingRecord(data=request.POST)
         logging.debug("------------*****-------------")
         logging.debug(form)
-        logging.debug(request.POST.person)
         if form.is_valid():
             logging.debug("Form is valid")
             booking_info = form.save(commit=True)
@@ -888,12 +853,23 @@ def handle_invoice(request):
 
 def handle_invoice_accommodation(request):
     if request.method == "GET":
+        logging.debug(request.user)
         invoices = []
-        logging.debug(invoices)
-        logging.debug(len(invoices))
-        logging.debug(type(invoices))
         user = User.object.get(id=request.user.id)
-        all_invoice = BookingInfo.objects.filter(user=user)
+        all_invoice = BookingInfo.objects.filter(user=user, status=1)
+        logging.debug(all_invoice)
+        for invoice in all_invoice:
+            if int(invoice.status) == 1:
+                invoices.append(invoice)
+        return render(request, 'accommodation_invoice.html', {'invoices': invoices})
+
+
+def handle_invoice_activity(request):
+    if request.method == "GET":
+        logging.debug(request.user)
+        invoices = []
+        user = User.object.get(id=request.user.id)
+        all_invoice = BookingActivity.objects.filter(user=user)
         logging.debug(all_invoice)
         for invoice in all_invoice:
             if int(invoice.status) == 1:
@@ -904,34 +880,6 @@ def handle_invoice_accommodation(request):
                 logging.debug(invoices)
             else:
                 logging.debug("Holy moly shit invoice.")
-        return render(request, 'accommodation_invoice.html', {'invoices': invoices})
-
-
-def handle_invoice_activity(request):
-    if request.method == "GET":
-        invoices = []
-        logging.debug(invoices)
-        logging.debug(len(invoices))
-        logging.debug(type(invoices))
-        user = User.object.get(id=request.user.id)
-        logging.debug(user)
-        all_invoice = BookingInfo.objects.filter(user=user)
-        logging.debug(all_invoice)
-        for invoice in all_invoice:
-            if int(invoice.status) == 1:
-               a = 0
-
-        # all_invoice = BookingInfo.objects.filter(user=user)
-        # logging.debug(all_invoice)
-        # for invoice in all_invoice:
-        #     if int(invoice.status) == 1:
-        #         logging.debug("you go your invoice.")
-        #         # add invoice into invoices
-        #         invoices.append(invoice)
-        #         logging.debug(invoice)
-        #         logging.debug(invoices)
-        #     else:
-        #         logging.debug("Holy moly shit invoice.")
         return render(request, 'activity_invoice.html', {'invoices': invoices})
 
 
@@ -977,7 +925,6 @@ def get_availability(request, checkin, checkout):
             'password': passwd,
         },
     }
-    logging.debug("####################")
     json_data = json.dumps(data)
 
     headers = {
@@ -986,7 +933,6 @@ def get_availability(request, checkin, checkout):
 
     req = Request('POST', url, data=json_data, headers=headers)
 
-    logging.debug("=======#########")
     logging.debug(req)
 
     prepped = req.prepare()
@@ -1031,25 +977,54 @@ def get_availability(request, checkin, checkout):
     #     return HttpResponse(availability)
 
 
+# def get_availability_accommodation(request, name, date):
+#     if request.method == "POST":
+#         availability = 0
+#         reserved = 0
+#         date_str = datetime.strptime(date, "%Y-%m-%d").strftime("%b. %d, %Y")
+#         date_checkin = datetime.strptime(date_str, "%b. %d, %Y")
+#         query_rooms = BookingInfo.objects.filter(status__in=[1, 2])
+#         #logging.debug(query_rooms)
+#         for room in query_rooms:
+#             #logging.debug(date_checkin < datetime.strptime(str(room.checkout_date), '%b. %d, %Y'))
+#             if date_checkin < datetime.strptime(str(room.checkout_date), '%b. %d, %Y'):
+#                 #logging.debug(room.room_data)
+#                 room_data = json.loads(room.room_data)
+#                 #logging.debug(room_data)
+#
+#                 for data in room_data:
+#                     if (data['name']).lower() == name.lower():
+#                         reserved = reserved + int(data['amount'])
+#
+#         accom = Accommodation.objects.get(name=name)
+#         availability = int(accom.amount) - reserved
+#         logging.debug('this is return value:')
+#         logging.debug(availability)
+#
+#     return HttpResponse(availability)
+
 def get_availability_activity(request, name, date):
-    logging.debug("iiiiiiiiiiiiii")
     if request.method == "POST":
+        logging.debug(type(date))
         availability = 0
         reserved = 0
         date_str = datetime.strptime(date, "%m-%d-%Y").strftime("%b. %d, %Y")
         date_checkin = datetime.strptime(date_str, "%b. %d, %Y")
-        query_activity = BookingInfo.objects.filter(status__in=[1, 2])
-        # logging.debug(query_rooms)
+        logging.debug(type(date_checkin))
+        query_activity = BookingActivity.objects.filter(status__in=[1, 2])
+        logging.debug(query_activity)
         for activity in query_activity:
-            # logging.debug(date_checkin < datetime.strptime(str(activity.checkout_date), '%b. %d, %Y'))
-            if date_checkin < datetime.strptime(str(activity.checkout_date), '%b. %d, %Y'):
-                # logging.debug(room.room_data)
-                activity_data = json.loads(activity.activity_data)
-                # logging.debug(activity_data)
+            logging.debug(datetime.strptime(str(activity.checkout_date), '%b. %d, %Y'))
+            if date_checkin:
+                logging.debug(date_checkin)
+                logging.debug(activity.act_data)
+                act_data = json.loads(activity.act_data)
+                logging.debug(act_data)
 
-                for data in activity_data:
+                for data in act_data:
                     if (data['name']).lower() == name.lower():
                         reserved = reserved + int(data['amount'])
+                        logging.debug(reserved)
 
         activiti = Activity.objects.get(name=name)
         availability = int(activiti.amount) - reserved
@@ -1067,6 +1042,25 @@ def invoice_download(request, bidb64=None, *args):
     }
 
     html_string = render_to_string('p_invoice.html', {'invoice': invoice})
+
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+    html.write_pdf(target='/tmp/%s.pdf' % invoice.reservation_no)
+
+    fs = FileSystemStorage('/tmp')
+    with fs.open('%s.pdf' % invoice.reservation_no) as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="invoice_%s.pdf"' % invoice.reservation_no
+        return response
+
+
+def activity_invoice_download(request, bidb64=None, *args):
+    invoice = BookingActivity.objects.get(bid=bidb64)
+
+    context = {
+        'invoice': invoice
+    }
+
+    html_string = render_to_string('activity_pdf_invoice.html', {'invoice': invoice})
 
     html = HTML(string=html_string, base_url=request.build_absolute_uri())
     html.write_pdf(target='/tmp/%s.pdf' % invoice.reservation_no)
@@ -1102,4 +1096,33 @@ def cancel_booking(request, reservation_no):
     send_mail(subject, message, from_email, receiver, fail_silently=True)
     logging.debug("successfully send email!")
     logging.debug(receiver)
-    return redirect('/invoice')
+    return redirect('/accommodation_invoice')
+
+
+def cancel_booking_activity(request, reservation_no):
+    """
+    : Cancel Booking by changing status to Cancelled
+    :param request:
+    :param reservation_no:
+    :return:
+    :status:(1, 'Confirm'),
+            (2, 'Operated'),
+            (3, 'Cancelled'),
+            (4, 'Completed')
+    """
+    # delete object in Booking_Info
+    booking_item = BookingActivity.objects.get(reservation_no=reservation_no)
+    logging.debug(booking_item)
+    booking_item.status = 3
+    booking_item.save()
+    subject = 'Canceling booked accommodation'
+    message = 'Hello Administrator! I am sending this to alert you that user name %s has canceled booked' % (
+        request.user)
+    from_email = settings.EMAIL_HOST_USER
+    receiver = ['phansreypich15@kit.edu.kh']
+    logging.debug("this is here and just here!")
+    send_mail(subject, message, from_email, receiver, fail_silently=True)
+    logging.debug("successfully send email!")
+    logging.debug(receiver)
+    return redirect('/activity_invoice')
+

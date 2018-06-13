@@ -42,3 +42,4 @@ get_room_availabilities = '/get_room_availabilities/' + str(date)
 
 res = requests.get(b_url + get_room_availabilities, cookies={'session_id': str(session_id)})
 print(res.text)
+

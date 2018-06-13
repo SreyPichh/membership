@@ -54,17 +54,15 @@
                 <th>Number of Guest</th>
                 <th>Price</th>
             </tr>
-            </thead>
-            <tbody>
-            {% for item in invoice.get_room_data %}
-                <tr>
-                    <th scope="row">{{ item.index|safe }}</th>
-                    <td>{{ item.room|safe }}</td>
-                    <td>{{ item.amount|safe }}</td>
-                    <td>{{ item.guest_num|safe }}</td>
-                    <td data-name="r_price" data-price="{{ item.price|safe }}">$ {{ item.price|safe }}</td>
-                </tr>
-            {% endfor %}
+                {% for item in invoice.get_room_data %}
+                    <tr>
+                        <th scope="row">{{ item.index|safe }}</th>
+                        <td>{{ item.room|safe }}</td>
+                        <td>{{ item.amount|safe }}</td>
+                        <td>{{ item.guest_num|safe }}</td>
+                        <td data-name="r_price" data-price="{{ item.price|safe }}">$ {{ item.price|safe }}</td>
+                    </tr>
+                {% endfor %}
 
                 <tr>
                     <td></td>
